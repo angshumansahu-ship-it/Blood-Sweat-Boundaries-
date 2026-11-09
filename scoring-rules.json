@@ -1,0 +1,107 @@
+{
+  "format": "T20",
+  "version": "draft-1",
+  "batting": {
+    "run": 1,
+    "four_bonus": 1,
+    "six_bonus": 2,
+    "strike_rate": {
+      "minimum_balls": 10,
+      "tiers": [
+        {
+          "min": 180,
+          "points": 12
+        },
+        {
+          "min": 160,
+          "max": 179.99,
+          "points": 8
+        },
+        {
+          "min": 140,
+          "max": 159.99,
+          "points": 6
+        },
+        {
+          "min": 90,
+          "max": 99.99,
+          "points": -4
+        },
+        {
+          "min": 80,
+          "max": 89.99,
+          "points": -6
+        },
+        {
+          "max": 79.99,
+          "points": -8
+        }
+      ]
+    }
+  },
+  "bowling": {
+    "wicket": 25,
+    "bowled_lbw_bonus": 8,
+    "three_wicket_bonus": 15,
+    "five_wicket_bonus": 30,
+    "maiden_over": 16,
+    "economy": {
+      "minimum_overs": 2,
+      "tiers": [
+        {
+          "max": 5,
+          "points": 25
+        },
+        {
+          "min": 5.01,
+          "max": 6,
+          "points": 20
+        },
+        {
+          "min": 6.01,
+          "max": 7,
+          "points": 15
+        },
+        {
+          "min": 7.01,
+          "max": 8,
+          "points": 10
+        },
+        {
+          "min": 8.01,
+          "max": 9,
+          "points": -6
+        },
+        {
+          "min": 9.01,
+          "max": 10,
+          "points": -10
+        },
+        {
+          "min": 10.01,
+          "points": -15
+        }
+      ]
+    }
+  },
+  "fielding": {
+    "catch": 8,
+    "run_out": 12,
+    "stumping": 16
+  },
+  "match": {
+    "player_of_match": 20
+  },
+  "multipliers": {
+    "captain": 2.0,
+    "vice_captain": 1.5
+  },
+  "pending_confirmation": [
+    "whether scoring tiers are intended for all tournament match formats or T20 only",
+    "minimum-balls and minimum-overs thresholds",
+    "retired hurt, run-out and assisted dismissal treatment",
+    "substitute/impact-player eligibility",
+    "super-over scoring",
+    "negative-score floor"
+  ]
+}

@@ -13,7 +13,7 @@ header{position:sticky;top:0;z-index:5;background:#09110eeb;backdrop-filter:blur
 </head>
 <body>
 <header><div class="nav"><div class="brand"><div class="mark">B</div><div>Blood, Sweat &amp; Boundaries<small>Private fantasy cricket league</small></div></div>
-<div class="navlinks"><button class="active" data-page="home">Dashboard</button><button data-page="team">My Squad</button><button data-page="leaderboard">Leaderboard</button><button data-page="admin">League Admin</button></div></div></header>
+<div class="navlinks"><button class="active" data-page="home">Dashboard</button><button data-page="team">My Squad</button><button data-page="leaderboard">Leaderboard</button><button data-page="matchcentre">Match Centre</button><button data-page="admin">League Admin</button></div></div></header>
 <main>
 <section id="home" class="page">
 <div class="hero"><div><div class="eyebrow">The game is yours</div><h1>Pick your squad.<br>Own the tournament.</h1><p>A private fantasy cricket arena for your crew. Build a 15-player squad, set your match XI, back your captain and climb the table.</p><div class="actions"><button class="btn primary" onclick="showPage('team')">Build my squad →</button><button class="btn" onclick="showPage('leaderboard')">View leaderboard</button></div></div><div class="hero-art">🏏</div></div>
@@ -31,6 +31,31 @@ header{position:sticky;top:0;z-index:5;background:#09110eeb;backdrop-filter:blur
 <div class="sectionhead"><div><div class="eyebrow">Tournament standings</div><h2>Leaderboard</h2><div class="muted">Fantasy points across all completed matches.</div></div><span class="pill">LIVE DATA: DEMO</span></div>
 <div class="card"><table class="table"><thead><tr><th>RANK</th><th>MANAGER</th><th>POINTS</th><th>MATCHES</th></tr></thead><tbody id="leaderRows"></tbody></table></div>
 <div class="notice">The sample leaderboard is illustrative. Real standings will populate after accounts and a verified cricket data feed are connected.</div>
+</section>
+<section id="matchcentre" class="page hidden">
+<div class="sectionhead"><div><div class="eyebrow">Commissioner workspace</div><h2>Match Centre</h2><div class="muted">Select a scheduled fixture to manage its Playing XI, scorecard and publication.</div></div><span class="pill">STAGE 9.1 · INTERFACE</span></div>
+<div class="grid">
+ <div class="card">
+  <h3>Select a match</h3>
+  <div class="field"><label for="mcTournament">Tournament</label><select id="mcTournament"><option value="bbl">BBL 2026–27</option></select></div>
+  <div class="field"><label for="mcStage">Match stage</label><select id="mcStage"><option value="league">League stage</option><option value="qualifier">Qualifier</option><option value="knockout">Knockout</option><option value="challenger">Challenger</option><option value="final">Final</option></select></div>
+  <div class="field"><label for="mcMatch">Match number</label><select id="mcMatch"><option value="">Choose a match</option></select></div>
+  <div class="notice">Fixture names, dates, venues and statuses will be loaded from your existing Supabase <code>matches</code> table when the website connection is added. This screen does not create or alter fixtures.</div>
+  <button class="btn primary" id="mcOpen" disabled onclick="openMatchWorkspace()">Open match workspace</button>
+ </div>
+ <div class="card">
+  <h3>Match workflow</h3>
+  <div class="row"><span>1. Confirm Playing XI</span><span class="pill">Next stage</span></div>
+  <div class="row"><span>2. Enter / import scorecard</span><span class="pill">Pending</span></div>
+  <div class="row"><span>3. Verify fantasy points</span><span class="pill">Pending</span></div>
+  <div class="row"><span>4. Publish match results</span><span class="pill">Pending</span></div>
+  <p class="muted" style="font-size:13px;margin-top:14px">Drafts will be saved per match. Publishing will remain a separate, deliberate action.</p>
+ </div>
+</div>
+<div id="mcWorkspace" class="card" style="margin-top:14px" hidden>
+ <div class="sectionhead" style="margin-top:0"><div><div class="eyebrow">Selected fixture</div><h2 id="mcSelectedTitle">Match workspace</h2></div><span class="pill">NOT CONNECTED</span></div>
+ <p class="muted">The match selector is ready. The next implementation step is to connect it to the existing Supabase fixtures and retrieve the selected match's real teams and status.</p>
+</div>
 </section>
 <section id="admin" class="page hidden">
 <div class="sectionhead"><div><div class="eyebrow">Commissioner's room</div><h2>League administration</h2><div class="muted">Configure the tournament and maintain the player pool for this prototype.</div></div><span class="pill">LOCAL ADMIN</span></div>
@@ -54,6 +79,12 @@ let db=JSON.parse(localStorage.getItem("bsb_db")||"null")||defaults;
 function persist(){localStorage.setItem("bsb_db",JSON.stringify(db));renderAll()}
 function showPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.toggle("hidden",p.id!==id));document.querySelectorAll(".navlinks button").forEach(b=>b.classList.toggle("active",b.dataset.page===id));}
 document.querySelectorAll("[data-page]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
+// Match Centre selector scaffold. Match IDs and fixture details will come from Supabase;
+// the options below are only match numbers for the already-imported BBL league schedule.
+const mcMatch=document.getElementById("mcMatch");
+for(let n=1;n<=40;n++){const o=document.createElement("option");o.value=String(n);o.textContent=`Match ${n}`;mcMatch.appendChild(o)}
+mcMatch.addEventListener("change",()=>{document.getElementById("mcOpen").disabled=!mcMatch.value});
+function openMatchWorkspace(){const n=mcMatch.value;if(!n)return;document.getElementById("mcSelectedTitle").textContent=`BBL 2026–27 · Match ${n}`;document.getElementById("mcWorkspace").hidden=false;}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function renderPlayers(){let q=(document.getElementById("playerSearch")?.value||"").toLowerCase();let el=document.getElementById("playerPool");if(!el)return;el.innerHTML=db.players.filter(p=>(p.name+" "+p.team+" "+p.role).toLowerCase().includes(q)).map(p=>`<label class="player"><input type="checkbox" ${db.squad.includes(p.id)?"checked":""} onchange="toggleSquad(${p.id},this.checked)"><span class="avatar">${esc(p.name.split(" ").map(x=>x[0]).join("").slice(0,2))}</span><span><b>${esc(p.name)}</b><small>${esc(p.team)} · ${esc(p.role)}</small></span></label>`).join("")||'<div class="empty">No players found.</div>';document.getElementById("squadCount").textContent=db.squad.length+" / 15 selected"}
 function toggleSquad(id,on){if(on&&db.squad.length>=15){alert("Your tournament squad is limited to 15 players.");renderPlayers();return}db.squad=on?[...db.squad,id]:db.squad.filter(x=>x!==id);db.xi=db.xi.filter(x=>db.squad.includes(x));if(!db.squad.includes(+db.captain))db.captain="";if(!db.squad.includes(+db.vice))db.vice="";persist()}

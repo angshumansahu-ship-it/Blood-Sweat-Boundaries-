@@ -201,7 +201,7 @@ document.getElementById("backToLoginButton").addEventListener("click", () => {
 recoveryForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const email = document.getElementById("recoveryEmail").value.trim();
-  const redirectTo = window.location.origin + window.location.pathname;
+  const redirectTo = "https://angshumansahu-ship-it.github.io/Blood-Sweat-Boundaries-/";
   const { error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo });
   if (error) setAuthMessage(error.message, true);
   else setAuthMessage("If an account exists for this email, a password-reset link has been sent. Check Inbox and Spam.");

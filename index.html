@@ -73,9 +73,9 @@ main{max-width:1320px;margin:22px auto}.hero{position:relative;min-height:245px;
 <section id="home" class="page">
 <div class="hero"><div><div class="eyebrow">The game is yours</div><h1>Pick your squad.<br>Own the tournament.</h1><p>Your tournament. Your strategy. Build your 11-player squad, make changes before every fixture and lead the standings.</p><div class="actions"><button class="btn primary" onclick="showPage('team')">Build my squad →</button><button class="btn" onclick="showPage('leaderboard')">View leaderboard</button></div></div><div class="hero-art">🏏</div></div>
 <div id="homeNextMatch"></div>
-<div class="stats"><div class="stat"><span>TOURNAMENT</span><strong id="statTournament">Not set</strong></div><div class="stat"><span>PLAYERS IN LEAGUE</span><strong id="statMembers">1</strong></div><div class="stat"><span>SQUAD SIZE</span><strong>11</strong></div><div class="stat"><span>YOUR POINTS</span><strong id="statPoints">0</strong></div></div>
+<div class="stats"><div class="stat"><span>TOURNAMENT</span><strong id="statTournament">Loading…</strong></div><div class="stat"><span>MANAGERS JOINED</span><strong id="statMembers">—</strong></div><div class="stat"><span>SQUAD SIZE</span><strong>11</strong></div><div class="stat"><span>YOUR POINTS</span><strong id="statPoints">—</strong></div></div>
 <div class="sectionhead"><h2>League overview</h2><span class="pill">PRIVATE · FREE TO PLAY</span></div>
-<div class="grid"><div class="card"><h3>Latest leaderboard</h3><div id="homeLeaders"></div></div><div class="card"><h3>How to play</h3><div class="row"><span>1. Join with your invite code</span><span class="pill">JOIN</span></div><div class="row"><span>2. Pick 11 tournament players</span><span class="pill">SQUAD</span></div><div class="row"><span>3. Set XI + captain each match</span><span class="pill">LOCK</span></div><div class="row"><span>4. Earn points from real stats</span><span class="pill">SCORE</span></div></div></div>
+<div class="grid"><div class="card"><h3>TLF scoring status</h3><div id="homeLeaders"><p class="muted">Loading tournament scoring status…</p></div></div><div class="card"><h3>How to play</h3><div class="row"><span>1. Join with your invite code</span><span class="pill">JOIN</span></div><div class="row"><span>2. Pick 11 tournament players</span><span class="pill">SQUAD</span></div><div class="row"><span>3. Set XI + captain each match</span><span class="pill">LOCK</span></div><div class="row"><span>4. Earn points from real stats</span><span class="pill">SCORE</span></div></div></div>
 <div class="notice">Player pool, BBL fixtures and your 11-player tournament team are saved in Supabase. Match lineups are saved separately for each fixture. Leaderboard and live scoring are still under development.</div>
 </section>
 <section id="team" class="page hidden">
@@ -236,7 +236,7 @@ function playerIllustration(p){
 function safeSvgId(value){return String(value).replace(/[^a-zA-Z0-9]/g,'').slice(0,18)||'player';}
 function nextUpcomingFixture(){const now=Date.now();return bblFixtures.filter(m=>m.starts_at&&new Date(m.starts_at).getTime()>=now&&(!m.selection_deadline||new Date(m.selection_deadline).getTime()>now)&&!lockedFixtureIds.has(idKey(m.id))&&!['completed','complete','finished','abandoned','cancelled'].includes(String(m.status||'').toLowerCase())).sort((a,b)=>new Date(a.starts_at)-new Date(b.starts_at))[0]||null;}
 function teamMonogram(name){return String(name||'TBC').split(/\s+/).map(x=>x[0]).join('').slice(0,3).toUpperCase();}
-function openUpcomingFixture(){const m=nextUpcomingFixture();if(!m)return;showPage('team');document.getElementById('playerSearch')?.focus();document.getElementById('team').scrollIntoView({behavior:'smooth',block:'start'});}
+function openUpcomingFixture(){const m=nextUpcomingFixture();if(!m)return;showPage('team');const target=document.getElementById('playerPool')||document.getElementById('team');target.scrollIntoView({behavior:'smooth',block:'start'});}
 function renderUpcomingMatch(){
  const m=nextUpcomingFixture();
  const markup=m?`<div class="tlf-match-card"><div><div class="eyebrow">Your next TLF fixture · Match ${esc(m.match_number)}</div><h2>${esc(m.home_name||'TBC')} <span style="color:#b9f36b">vs</span> ${esc(m.away_name||'TBC')}</h2><div class="match-versus"><div class="match-side"><div class="team-monogram">${esc(teamMonogram(m.home_name))}</div><strong>${esc(m.home_name||'Team TBC')}</strong></div><div class="versus">VS</div><div class="match-side"><div class="team-monogram">${esc(teamMonogram(m.away_name))}</div><strong>${esc(m.away_name||'Team TBC')}</strong></div></div><div class="match-meta"><span class="meta-chip">${esc(dateLabel(m.starts_at,'Asia/Kolkata'))} IST</span><span class="meta-chip">${esc(m.venue||'Venue TBC')}</span><span class="meta-chip">Deadline: ${esc(dateLabel(m.selection_deadline,'Asia/Kolkata'))}</span></div></div><div class="match-action-panel"><div><div class="eyebrow">Time until selection deadline</div><div class="countdown" data-countdown="${esc(m.selection_deadline||m.starts_at)}">${countdownLabel(m.selection_deadline||m.starts_at)}</div><p class="muted" style="font-size:13px">Make your team changes before the selection deadline. Locked fixtures cannot be edited.</p></div><button class="btn primary" onclick="openUpcomingFixture()">EDIT TEAM FOR NEXT MATCH →</button></div></div>`:`<div class="tlf-match-card"><div><div class="eyebrow">Tournament Long Fantasy</div><h2>No upcoming fixture found</h2><p class="muted">The next match will appear here once a future fixture is available in the tournament schedule.</p></div><div class="match-action-panel"><div class="match-empty">Fixture schedule is loaded from your tournament database.</div><button class="btn" onclick="showPage('matchcentre')">Open Match Centre</button></div></div>`;
@@ -565,7 +565,53 @@ async function loadLockedFixtureIds(){
  if(error){console.warn("Could not check locked fixtures for upcoming-match routing:",error.message);return;}
  lockedFixtureIds=new Set((data||[]).map(x=>idKey(x.match_id)));
 }
-async function loadBblData(){await Promise.all([loadBblPlayers(),loadBblFixtures(),loadLineupSettings()]);await loadSavedTournamentSquad();await loadLockedFixtureIds();renderUpcomingMatch();refreshCountdowns();}
+async function loadDashboardData(){
+  const tournamentEl=document.getElementById("statTournament");
+  const membersEl=document.getElementById("statMembers");
+  const pointsEl=document.getElementById("statPoints");
+  const leadersEl=document.getElementById("homeLeaders");
+  if(tournamentEl)tournamentEl.textContent="Loading…";
+  if(membersEl)membersEl.textContent="—";
+  if(pointsEl)pointsEl.textContent="—";
+
+  const {data:tournament,error:tournamentError}=await supabaseClient
+    .from("tournaments").select("name,league_id")
+    .eq("id",BBL_TOURNAMENT_ID).maybeSingle();
+  if(tournamentError){
+    if(tournamentEl)tournamentEl.textContent="Unavailable";
+    console.warn("Dashboard tournament lookup failed:",tournamentError.message);
+  }else if(tournamentEl){
+    tournamentEl.textContent=tournament?.name||"Tournament not configured";
+  }
+
+  if(tournament?.league_id){
+    const {count,error:memberError}=await supabaseClient
+      .from("league_members").select("user_id",{count:"exact",head:true})
+      .eq("league_id",tournament.league_id);
+    if(membersEl)membersEl.textContent=memberError?"Unavailable":String(count??0);
+    if(memberError)console.warn("Dashboard manager count failed:",memberError.message);
+  }else if(membersEl){membersEl.textContent="—";}
+
+  if(currentFantasySquadId){
+    const {data:scores,error:scoreError}=await supabaseClient
+      .from("tournament_fantasy_scores").select("total_points")
+      .eq("squad_id",currentFantasySquadId);
+    if(scoreError){
+      if(pointsEl)pointsEl.textContent="Unavailable";
+      if(leadersEl)leadersEl.innerHTML='<p class="muted">Could not load TLF scoring data. Please refresh later.</p>';
+      console.warn("Dashboard TLF score lookup failed:",scoreError.message);
+    }else{
+      const totalPoints=(scores||[]).reduce((sum,row)=>sum+Number(row.total_points||0),0);
+      const scoredMatches=(scores||[]).length;
+      if(pointsEl)pointsEl.textContent=String(Number(totalPoints.toFixed(2)));
+      if(leadersEl)leadersEl.innerHTML=`<div class="row"><span><strong>Your tournament team</strong><br><span class="muted">${scoredMatches} scored matches</span></span><strong>${Number(totalPoints.toFixed(2))} pts</strong></div>${scoredMatches===0?'<p class="muted" style="margin-top:10px">Tournament scoring is awaiting completed match results.</p>':''}`;
+    }
+  }else{
+    if(pointsEl)pointsEl.textContent="0";
+    if(leadersEl)leadersEl.innerHTML='<p class="muted">Save your tournament squad to appear in the standings.</p>';
+  }
+}
+async function loadBblData(){await Promise.all([loadBblPlayers(),loadBblFixtures(),loadLineupSettings()]);await loadSavedTournamentSquad();await loadLockedFixtureIds();await loadDashboardData();renderUpcomingMatch();refreshCountdowns();}
 setInterval(refreshCountdowns,60000);
 
 function setAuthMessage(message, isError=false) {

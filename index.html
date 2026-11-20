@@ -394,6 +394,53 @@ async function loadMatchLineup(match){
  renderMatchLineup();
  lineupMessage(activeLineupStatus==="locked"?"Your locked fixture XI has been loaded from its historical match record.":(activeLineupId?"Your draft is ready. The latest My Squad team is loaded; save to update this fixture.":"Your saved 11-player tournament team is loaded. Choose captain and vice-captain, then save this fixture."),"notice success");
 }
+window.adminLockAllTeams = async function(){
+ const output=document.getElementById("adminBulkLockMessage");
+ const button=document.getElementById("adminBulkLockButton");
+ if(currentAccountRole!=="super_admin"){
+  output.textContent="Access denied: this action is restricted to the super admin.";
+  return;
+ }
+ if(!activeLineupMatch || !activeLineupMatch.id){
+  output.textContent="No match is open. Select a fixture and click Open match workspace first.";
+  return;
+ }
+ if(activeLineupStatus==="locked"){
+  output.textContent="Your lineup for this match is already locked. The bulk operation can still process other participants; continue only if this is the intended fixture.";
+ }
+ if(!confirm("Lock all participants' teams for this selected match? Existing locked teams will remain unchanged."))return;
+
+ button.disabled=true;
+ output.textContent="Sending bulk-lock request to Supabase…";
+ try{
+  const {data,error}=await supabaseClient.rpc(
+   "admin_lock_all_tournament_teams",
+   {p_match_id:activeLineupMatch.id}
+  );
+  if(error)throw error;
+  const result=data||{};
+  const locked=Number(result.locked_count||0);
+  const already=Number(result.already_locked_count||0);
+  const attention=Number(result.needs_attention_count||0);
+  const participants=Array.isArray(result.participants)?result.participants:[];
+  const lines=participants.map(item=>{
+   const name=item.display_name||item.user_name||("Squad "+(item.squad_id||"unknown"));
+   return name+": "+(item.result||"processed")+(item.reason?" — "+item.reason:"");
+  });
+  output.textContent=
+   "Bulk lock completed. Newly locked: "+locked+
+   ". Already locked: "+already+
+   ". Needs attention: "+attention+
+   (lines.length?"\n"+lines.join("\n"):"\nNo participant squads were found for this tournament.");
+  await loadSubstitutionStatus(activeLineupMatch);
+ }catch(error){
+  console.error("Admin bulk lock failed:",error);
+  output.textContent="Bulk lock failed: "+(error.message||String(error));
+ }finally{
+  button.disabled=false;
+ }
+};
+
 async function loadSubstitutionStatus(match){
  const box=document.getElementById("substitutionTracker"),pill=document.getElementById("substitutionPhasePill");
  if(!currentFantasySquadId||!match){box.textContent="Open a fixture to see substitution usage.";pill.textContent="Select a match";return;}

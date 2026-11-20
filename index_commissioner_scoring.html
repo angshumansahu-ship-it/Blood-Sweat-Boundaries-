@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Blood, Sweat & Boundaries</title>
+<style>
+:root{--bg:#f3f7f4;--panel:#ffffff;--panel2:#eaf3ed;--line:#d5e2d9;--muted:#52665a;--text:#17251d;--green:#16834a;--gold:#a66a00;--red:#c62828}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#edf5ef 0%,var(--bg) 280px);color:var(--text);font:15px/1.5 Inter,ui-sans-serif,system-ui,Segoe UI,Arial}
+header{position:sticky;top:0;z-index:5;background:#ffffffed;backdrop-filter:blur(12px);border-bottom:1px solid var(--line);box-shadow:0 2px 10px #173b2410}
+.nav{max-width:1200px;margin:auto;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px}.brand{display:flex;align-items:center;gap:12px;font-weight:850;letter-spacing:.2px}.mark{width:42px;height:42px;border-radius:13px;background:linear-gradient(145deg,#b9e9ca,#16834a);display:grid;place-items:center;color:#ffffff;font-size:22px;font-weight:900}.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:2px;text-transform:uppercase}.navlinks{display:flex;gap:6px;flex-wrap:wrap}.navlinks button,.btn{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:9px 13px;border-radius:10px;cursor:pointer;font-weight:650}.navlinks button.active,.btn.primary{background:var(--green);color:#ffffff;border-color:var(--green)}button:hover{filter:brightness(1.12)}main{max-width:1200px;margin:28px auto;padding:0 22px 60px}.hero{border:1px solid #315541;border-radius:22px;padding:28px;background:linear-gradient(110deg,#e0f1e5,#ffffff 65%,#d9ecdf);display:flex;justify-content:space-between;align-items:center;gap:20px;overflow:hidden}.eyebrow{color:var(--green);font-weight:800;text-transform:uppercase;letter-spacing:2px;font-size:11px}.hero h1{font-size:clamp(28px,4vw,48px);line-height:1.05;margin:9px 0}.hero p{color:#52665a;max-width:610px;margin:0}.hero-art{font-size:90px;opacity:.9;filter:drop-shadow(0 10px 20px #0008)}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}.stat,.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:17px;box-shadow:0 3px 12px #173b2408}.stat span{display:block;color:var(--muted);font-size:12px}.stat strong{font-size:25px}.sectionhead{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:26px 0 12px}.sectionhead h2{margin:0;font-size:20px}.muted{color:var(--muted)}.grid{display:grid;grid-template-columns:1.35fr .9fr;gap:14px}.card h3{margin:0 0 12px;font-size:16px}.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid #26372f}.row:last-child{border:0}.pill{font-size:11px;border-radius:99px;padding:4px 8px;background:#e2f2e7;color:#176b3d;font-weight:750}.table{width:100%;border-collapse:collapse}.table th,.table td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);font-size:13px}.table th{color:var(--muted);font-weight:650}.table tr:last-child td{border:0}.field{display:flex;flex-direction:column;gap:5px;margin:10px 0}.field label{font-size:12px;color:var(--muted)}input,select{background:#ffffff;border:1px solid var(--line);color:var(--text);padding:10px 11px;border-radius:9px;width:100%;font:inherit}.playerlist{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.player{display:flex;align-items:center;gap:9px;padding:9px;background:#f8fbf9;border:1px solid var(--line);border-radius:11px}.player input{width:auto}.avatar{width:34px;height:34px;border-radius:10px;background:#dcefe2;display:grid;place-items:center;font-weight:800;color:#176b3d}.player small{display:block;color:var(--muted)}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.hidden{display:none!important}.notice{padding:12px;border:1px solid #6a5628;background:#fff4d8;color:#795400;border-radius:12px;font-size:13px;margin:14px 0}.success{border-color:#285b3d;background:#e5f5e9;color:#176b3d}.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}.tabs button{background:#f7faf8;border:1px solid var(--line);color:var(--muted);padding:8px 12px;border-radius:9px;cursor:pointer}.tabs button.active{color:#176b3d;border-color:#70b889;background:#e7f4eb}.empty{padding:25px;text-align:center;color:var(--muted)}button:disabled,select:disabled,input:disabled{opacity:.55;cursor:not-allowed}.reserve-row{display:grid;grid-template-columns:110px 1fr;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}.lineup-metric{display:flex;justify-content:space-between;gap:12px;padding:5px 0}footer{border-top:1px solid var(--line);padding:20px;text-align:center;color:var(--muted);font-size:12px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.hero-art{display:none}.nav{align-items:flex-start;flex-direction:column}.navlinks{width:100%}.navlinks button{flex:1}.playerlist{grid-template-columns:1fr}main{padding:0 14px 40px}.hero{padding:22px}}
+
+.auth-wrap{min-height:100vh;display:grid;place-items:center;padding:22px}
+.auth-card{width:min(440px,100%);background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:26px;box-shadow:0 20px 70px #0008}
+.auth-card h1{font-size:25px;margin:0 0 6px}.auth-card p{color:var(--muted);margin:0 0 18px}
+.auth-tabs{display:flex;gap:8px;margin:16px 0}.auth-tabs button{flex:1;padding:10px;border:1px solid var(--line);background:#ffffff;color:var(--muted);border-radius:9px;cursor:pointer}.auth-tabs button.active{background:#e7f4eb;color:#176b3d;border-color:#70b889}
+.auth-message{margin-top:12px;white-space:pre-wrap}.auth-top{display:flex;justify-content:space-between;align-items:center;gap:12px}.auth-top button{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:8px 12px;border-radius:9px;cursor:pointer}
+
+
+/* TLF hybrid redesign: dark match hub + light squad workshop */
+:root{--night:#081a17;--night2:#102a24;--lime:#b9f36b;--mint:#dff4e5;--ink:#10231c;--surface:#fff;--soft:#f3f7f3;--muted:#66776e;--line:#dce7df;--green:#167447}
+body{background:linear-gradient(180deg,#eaf2ec 0,#f6f8f6 340px);color:var(--ink)}
+header{background:#f9fcfaeF;border-color:#dce7df}.brand .mark{background:linear-gradient(145deg,#c7fa8a,#18824e);color:#082018;box-shadow:0 8px 22px #16744725}
+.navlinks button{border-radius:999px;padding:10px 15px}.navlinks button.active{background:#102a24;border-color:#102a24;color:#d7ff9c}
+main{max-width:1320px;margin:22px auto}.hero{position:relative;min-height:245px;border:1px solid #21483b;background:radial-gradient(circle at 82% 20%,#315c42 0,transparent 33%),linear-gradient(120deg,#071a17,#102e26 60%,#173d2d);color:#f4fff6;box-shadow:0 20px 45px #102a241f}.hero:after{content:"";position:absolute;right:8%;bottom:-95px;width:300px;height:300px;border:1px solid #b9f36b45;border-radius:50%;box-shadow:0 0 0 28px #b9f36b0c,0 0 0 58px #b9f36b08}.hero .eyebrow{color:var(--lime)}.hero h1{letter-spacing:-1.8px}.hero p{color:#c5d9ce}.hero-art{font-size:104px;z-index:1;filter:drop-shadow(0 10px 24px #0008)}.hero .btn{border-color:#537463;background:#173b2d;color:#f2fff5}.hero .btn.primary{background:var(--lime);border-color:var(--lime);color:#102017}
+.stat,.card{border-radius:19px;border-color:#e0e9e2;box-shadow:0 8px 25px #173b2409}.stat{padding:19px}.stat strong{letter-spacing:-.7px}.sectionhead h2{letter-spacing:-.5px}.pill{background:#e9f6e9;color:#176b3d}
+.tlf-match-card{display:grid;grid-template-columns:1.15fr .85fr;gap:20px;margin:18px 0;padding:22px;border-radius:22px;background:linear-gradient(125deg,#0a1d19,#14382d);color:#f5fff7;border:1px solid #315847;box-shadow:0 18px 40px #0a281d20;overflow:hidden}.tlf-match-card .eyebrow{color:var(--lime)}.tlf-match-card h2{font-size:clamp(22px,3vw,32px);margin:5px 0 2px}.tlf-match-card .muted{color:#bdd2c5}.match-versus{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;margin:15px 0}.match-side{text-align:center}.team-monogram{width:72px;height:72px;margin:auto auto 8px;border-radius:22px;display:grid;place-items:center;background:linear-gradient(145deg,#d7f8a4,#6bbd79);color:#10231c;font-size:23px;font-weight:950;letter-spacing:-1px;box-shadow:0 9px 24px #0003}.match-side strong{display:block;font-size:14px}.versus{font-size:13px;color:#9db5a7;font-weight:900;letter-spacing:2px}.match-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.meta-chip{border:1px solid #426455;background:#17392e;color:#d9e9df;border-radius:999px;padding:7px 11px;font-size:12px}.match-action-panel{align-self:stretch;border:1px solid #385c4b;background:#ffffff0a;border-radius:17px;padding:17px;display:flex;flex-direction:column;justify-content:space-between}.countdown{font-size:27px;font-weight:850;letter-spacing:-1px;color:var(--lime);font-variant-numeric:tabular-nums}.tlf-match-card .btn.primary{background:var(--lime);border-color:var(--lime);color:#102017;padding:12px 16px}.tlf-match-card .btn:disabled{opacity:.5}.match-empty{color:#d2e3d8;padding:16px 0}
+.team-intro{padding:20px;border-radius:18px;background:linear-gradient(110deg,#e4f3e8,#f8fbf8);border:1px solid #d4e7d9;margin-bottom:14px}.team-intro h2{margin:3px 0 4px}.team-intro p{margin:0;color:#60736a}.playerlist{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.player{background:#fff;border-radius:15px;padding:10px;border-color:#e2eae4;min-width:0;transition:transform .15s,box-shadow .15s}.player:hover{transform:translateY(-2px);box-shadow:0 8px 20px #153d2512}.player input{accent-color:#167447}.player-art{width:58px;height:66px;flex:0 0 58px;border-radius:13px;overflow:hidden;background:#e6f3e8}.player-art svg{width:100%;height:100%;display:block}.player-copy{min-width:0;flex:1}.player-copy b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.player-copy small{line-height:1.45}.player-credit{font-size:11px;font-weight:800;color:#176b3d;background:#e9f6ec;padding:4px 7px;border-radius:8px;white-space:nowrap}.selected-player-card{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #e2eae4;border-radius:14px;background:#fff;margin:7px 0}.selected-player-card .player-art{width:48px;height:56px;flex-basis:48px}.squad-progress{height:8px;background:#e7eee8;border-radius:99px;overflow:hidden;margin:10px 0}.squad-progress span{display:block;height:100%;background:linear-gradient(90deg,#16834a,#b9e96a);border-radius:99px;transition:width .2s}.team-edit-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}.team-edit-grid>.card{min-width:0}.team-save-panel{position:sticky;top:100px;align-self:start}.next-match-mini{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px;border:1px solid #d9e8dc;border-radius:14px;background:#f5faf6;margin-bottom:12px}.next-match-mini b{display:block}.next-match-mini small{color:#66776e}.next-match-mini button{white-space:nowrap}
+#matchcentre .card{border-radius:18px}.match-player-row{display:flex;align-items:center;gap:10px}.match-player-row .player-art{width:46px;height:54px;flex-basis:46px}
+@media(max-width:850px){.tlf-match-card{grid-template-columns:1fr}.match-action-panel{gap:12px}.team-edit-grid{grid-template-columns:1fr}.team-save-panel{position:static}.playerlist{grid-template-columns:1fr}}
+@media(max-width:560px){.tlf-match-card{padding:16px}.team-monogram{width:58px;height:58px;border-radius:17px}.match-versus{gap:5px}.player-art{width:54px;height:62px;flex-basis:54px}.navlinks button{font-size:12px;padding:8px 10px}}
+
+</style>
+</head>
+<body>
+
+<section id="authGate" class="auth-wrap">
+ <div class="auth-card">
+  <div class="brand"><div class="mark">B</div><div>Blood, Sweat &amp; Boundaries<small>Private fantasy cricket league</small></div></div>
+  <h1 style="margin-top:24px">Welcome to the league</h1>
+  <p>Sign in or create your participant account.</p>
+  <div class="auth-tabs">
+   <button id="loginTab" class="active" type="button">Sign in</button>
+   <button id="signupTab" type="button">Create account</button>
+  </div>
+  <form id="authForm">
+   <div class="field" id="nameField" hidden><label for="authName">Display name</label><input id="authName" autocomplete="name" placeholder="Your name"></div>
+   <div class="field"><label for="authEmail">Email</label><input id="authEmail" type="email" autocomplete="email" required placeholder="you@example.com"></div>
+   <div class="field"><label for="authPassword">Password</label><input id="authPassword" type="password" autocomplete="current-password" minlength="8" required placeholder="At least 8 characters"></div>
+   <button class="btn primary" id="authSubmit" type="submit" style="width:100%">Sign in</button>
+  </form>
+  <div id="authMessage" class="auth-message muted" role="status"></div>
+  <p style="font-size:12px;margin-top:16px">New accounts may need email confirmation. League access requires an invitation code from the commissioner.</p>
+ </div>
+</section>
+<div id="appShell" class="hidden">
+<div id="passwordChangePanel" class="auth-wrap hidden" style="position:fixed;inset:0;z-index:20;background:#000b;min-height:100vh">
+ <div class="auth-card">
+  <h2>Set a new password</h2>
+  <p>Enter a new password for your Blood, Sweat &amp; Boundaries account.</p>
+  <form id="passwordChangeForm">
+   <div class="field"><label for="newPassword">New password</label><input id="newPassword" type="password" minlength="8" autocomplete="new-password" required placeholder="At least 8 characters"></div>
+   <div class="field"><label for="confirmNewPassword">Confirm new password</label><input id="confirmNewPassword" type="password" minlength="8" autocomplete="new-password" required placeholder="Enter it again"></div>
+   <button class="btn primary" id="saveNewPassword" type="submit" style="width:100%">Save new password</button>
+  </form>
+  <div id="passwordChangeMessage" class="auth-message muted" role="status"></div>
+  <button class="btn" id="closePasswordChange" type="button" style="margin-top:12px">Close</button>
+ </div>
+</div>
+<header><div class="nav"><div class="brand"><div class="mark">B</div><div>Blood, Sweat &amp; Boundaries<small>Private fantasy cricket league</small></div></div>
+<div class="navlinks"><button class="active" data-page="home">Dashboard</button><button data-page="team">My Squad</button><button data-page="leaderboard">Leaderboard</button><button data-page="matchcentre">Match Centre</button><button data-page="join">Join League</button><button data-page="admin" id="adminNavButton">League Admin</button></div></div></header>
+<main>
+<section id="home" class="page">
+<div class="hero"><div><div class="eyebrow">The game is yours</div><h1>Pick your squad.<br>Own the tournament.</h1><p>Your tournament. Your strategy. Build your 11-player squad, make changes before every fixture and lead the standings.</p><div class="actions"><button class="btn primary" onclick="showPage('team')">Build my squad →</button><button class="btn" onclick="showPage('leaderboard')">View leaderboard</button></div></div><div class="hero-art">🏏</div></div>
+<div id="homeNextMatch"></div>
+<div class="stats"><div class="stat"><span>TOURNAMENT</span><strong id="statTournament">Loading…</strong></div><div class="stat"><span>MANAGERS JOINED</span><strong id="statMembers">—</strong></div><div class="stat"><span>SQUAD SIZE</span><strong>11</strong></div><div class="stat"><span>YOUR POINTS</span><strong id="statPoints">—</strong></div></div>
+<div class="sectionhead"><h2>League overview</h2><span class="pill">PRIVATE · FREE TO PLAY</span></div>
+<div class="grid"><div class="card"><h3>TLF scoring status</h3><div id="homeLeaders"><p class="muted">Loading tournament scoring status…</p></div></div><div class="card"><h3>How to play</h3><div class="row"><span>1. Join with your invite code</span><span class="pill">JOIN</span></div><div class="row"><span>2. Pick 11 tournament players</span><span class="pill">SQUAD</span></div><div class="row"><span>3. Set XI + captain each match</span><span class="pill">LOCK</span></div><div class="row"><span>4. Earn points from real stats</span><span class="pill">SCORE</span></div></div></div>
+<div class="notice">Player pool, BBL fixtures and your 11-player tournament team are saved in Supabase. Match lineups are saved separately for each fixture. Leaderboard and live scoring are still under development.</div>
+</section>
+<section id="team" class="page hidden">
+<div class="sectionhead"><div><div class="eyebrow">Tournament Long Fantasy · Team workshop</div><h2>Build your winning 11</h2><div class="muted">Update your tournament squad for the next unlocked fixture. Every previously locked match lineup stays preserved.</div></div><span class="pill" id="squadCount">0 / 11 selected</span></div><div id="teamNextMatch"></div>
+<div class="card" style="margin-bottom:14px"><h3>Squad category limits</h3><div id="squadRoleSummary" class="lineup-metric">WK 0/1–4 · BAT 0/3–6 · AR 0/1–4 · BOWL 0/3–6</div><p class="muted" style="font-size:12px;margin:8px 0 0">Minimum and maximum player counts apply to your 11-player tournament team.</p></div>
+<div class="team-edit-grid"><div class="card"><h3>Available player pool</h3><div class="field"><label>Filter players</label><input id="playerSearch" placeholder="Search name or team..." oninput="renderPlayers()"></div><p id="playerDataStatus" class="muted" aria-live="polite">Connecting to BBL player database…</p><div class="playerlist" id="playerPool"></div></div>
+<div class="card team-save-panel"><h3>Your tournament XI</h3><div class="notice">Edit and save your 11 here before the next fixture to make team changes. A previously locked match lineup is preserved. Match Centre compares your new team with your last locked XI and applies the substitution limit.</div><div id="selectedSummary" class="muted">Choose 11 players from the pool.</div><div class="row"><span>Squad selection</span><b id="squadSelectionStatus">0 / 11</b></div><div class="row"><span>Role limits</span><b>WK 1–4 · BAT 3–6 · AR 1–4 · BOWL 3–6</b></div><div class="actions"><button class="btn primary" id="saveTeamButton" onclick="saveTeam()">Save tournament squad</button><button class="btn" type="button" onclick="resetTeam()">Clear selections</button><button class="btn" onclick="showPage('matchcentre')">Go to Match Centre →</button></div><div id="teamMessage"></div></div></div>
+</section>
+<section id="leaderboard" class="page hidden">
+<div class="sectionhead"><div><div class="eyebrow">Tournament standings</div><h2>Leaderboard</h2><div class="muted">Fantasy points across all completed matches.</div></div><span class="pill">LIVE DATA: DEMO</span></div>
+<div class="card"><table class="table"><thead><tr><th>RANK</th><th>MANAGER</th><th>POINTS</th><th>MATCHES</th></tr></thead><tbody id="leaderRows"></tbody></table></div>
+<div class="notice">The sample leaderboard is illustrative. Real standings will populate after accounts and a verified cricket data feed are connected.</div>
+</section>
+<section id="matchcentre" class="page hidden">
+<div class="sectionhead"><div><div class="eyebrow">Commissioner workspace</div><h2>Match Centre</h2><div class="muted">Select a fixture to load your saved 11-player tournament team and assign its captain and vice-captain. Each fixture stores its own captaincy.</div></div><span class="pill">MATCH LINEUPS · SUPABASE</span></div>
+<div class="grid">
+ <div class="card">
+  <h3>Select a match</h3>
+  <div class="field"><label for="mcTournament">Tournament</label><select id="mcTournament"><option value="bbl">BBL 2026–27</option></select></div>
+  <div class="field"><label for="mcStage">Match stage</label><select id="mcStage"><option value="league">League stage</option><option value="qualifier">Qualifier</option><option value="knockout">Knockout</option><option value="challenger">Challenger</option><option value="final">Final</option></select></div>
+  <div class="field"><label for="mcMatch">Match number</label><select id="mcMatch"><option value="">Choose a match</option></select></div>
+  <p id="matchDataStatus" class="muted" aria-live="polite">Connecting to BBL fixtures…</p><div id="matchDetails" class="muted"></div>
+  <button class="btn primary" id="mcOpen" disabled onclick="openMatchWorkspace()">Open match workspace</button>
+ </div>
+ <div class="card">
+  <h3>Match workflow</h3>
+  <div class="row"><span>1. Confirm Playing XI</span><span class="pill">Next stage</span></div>
+  <div class="row"><span>2. Enter / import scorecard</span><span class="pill">Pending</span></div>
+  <div class="row"><span>3. Verify fantasy points</span><span class="pill">Pending</span></div>
+  <div class="row"><span>4. Publish match results</span><span class="pill">Pending</span></div>
+  <p class="muted" style="font-size:13px;margin-top:14px">After opening a fixture, your saved tournament 11 loads automatically. Choose a captain and vice-captain, then save and lock the fixture. No separate XI selection or reserves are used in Tournament Long Fantasy.</p>
+ </div>
+</div>
+<div class="card" id="substitutionTrackerCard" style="margin-top:14px">
+ <div class="sectionhead" style="margin-top:0"><div><div class="eyebrow">Tournament Long Fantasy</div><h3 style="margin:4px 0">Substitution tracker</h3></div><span class="pill" id="substitutionPhasePill">Select a match</span></div>
+ <div id="substitutionTracker" class="muted">Open a fixture to see substitutions used, proposed and remaining.</div>
+ <div class="actions"><button class="btn" type="button" onclick="showPage('team')">Edit team for next match →</button></div>
+</div>
+<div id="mcWorkspace" class="card" style="margin-top:14px" hidden>
+  <div class="sectionhead" style="margin-top:0"><div><div class="eyebrow">Selected fixture</div><h2 id="mcSelectedTitle">Match workspace</h2></div><span class="pill" id="lineupStatusPill">DRAFT</span></div>
+  <div id="mcFixtureDetails" class="muted">Choose a fixture above.</div>
+  <div class="notice" id="lineupNotice">Choose your 11-player tournament team, then select captain and vice-captain for this fixture. Save your lineup before the match locks.</div>
+  <div class="grid">
+   <div>
+    <h3>Your saved tournament 11 <span class="muted" id="xiCounter">0 / 11</span></h3>
+    <div id="matchXiList" class="playerlist"></div>
+    <div class="field"><label for="matchCaptain">Captain (2× points)</label><select id="matchCaptain"><option value="">Select captain</option></select></div>
+    <div class="field"><label for="matchVice">Vice-captain (1.5× points)</label><select id="matchVice"><option value="">Select vice-captain</option></select></div>
+   </div>
+   <div>
+    <h3>Lineup summary</h3>
+    <p class="muted" style="font-size:13px">Your selected 11 players form your tournament team. Choose a captain and vice-captain.</p>
+    <p class="muted" style="font-size:12px;margin-top:8px">Your saved tournament team is used automatically for this fixture.</p>
+    <div class="card" style="margin-top:12px;background:#f8fbf9"><h3>Lineup summary</h3><div id="matchLineupSummary" class="muted">Select your Playing XI.</div></div>
+   </div>
+  </div>
+  <div class="actions">
+   <button class="btn primary" id="saveMatchLineupButton" type="button" onclick="saveMatchLineup()">Save match lineup</button>
+  </div>
+  <div id="adminBulkLockPanel" class="card" style="margin-top:14px;border:1px solid #c28b2c;background:#fffaf0" hidden>
+   <h3>Commissioner control · Manual match lock</h3>
+   <p class="muted">This locks every participant's team for the selected match. Valid saved XIs are locked as saved. Missing or invalid drafts use the participant's previous valid locked XI and captaincy. Participants without a previous valid XI are flagged for attention.</p>
+   <button class="btn primary" id="adminBulkLockButton" type="button" onclick="adminLockAllTeams()">LOCK ALL TEAMS FOR THIS MATCH</button>
+   <div id="adminBulkLockMessage" aria-live="polite" style="margin-top:10px"></div>
+  </div>
+  <div id="adminScorePanel" class="card" style="margin-top:14px;border:1px solid #8ab99a;background:#f4fbf5" hidden>
+   <h3>Commissioner control · Match scoring</h3>
+   <p class="muted">Calculate or recalculate fantasy points for every valid locked team in this match. Only the super administrator can run this action. Recalculation updates existing score records rather than creating duplicates.</p>
+   <button class="btn primary" id="adminCalculateScoresButton" type="button" onclick="adminCalculateMatchScores()">CALCULATE / RECALCULATE MATCH SCORES</button>
+   <div id="adminCalculateScoresMessage" aria-live="polite" style="margin-top:10px"></div>
+   <div id="adminCalculateScoresResults" style="margin-top:12px"></div>
+  </div>
+  <div id="matchLineupMessage" aria-live="polite"></div>
+ </div>
+</section>
+
+<section id="join" class="page hidden">
+ <div class="sectionhead"><div><div class="eyebrow">Private league access</div><h2>Join Blood, Sweat &amp; Boundaries</h2><div class="muted">Enter the invitation code shared by the league commissioner to access BBL 2026–27.</div></div><span class="pill">INVITATION REQUIRED</span></div>
+ <div class="card" style="max-width:620px">
+  <h3>Enter invitation code</h3>
+  <form id="joinLeagueForm">
+   <div class="field"><label for="joinInviteCode">Invitation code</label><input id="joinInviteCode" autocomplete="off" autocapitalize="characters" spellcheck="false" required minlength="8" maxlength="24" placeholder="Enter your league code"></div>
+   <button class="btn primary" id="joinLeagueButton" type="submit">Join league</button>
+  </form>
+  <div id="joinLeagueMessage" class="auth-message muted" role="status"></div>
+ </div>
+</section>
+<section id="admin" class="page hidden">
+<div class="sectionhead"><div><div class="eyebrow">Commissioner's room</div><h2>League administration</h2><div class="muted">Commissioner controls and prototype tools.</div></div><span class="pill">LOCAL ADMIN</span></div>
+<div class="grid"><div class="card"><h3>Tournament settings</h3><div class="field"><label>Tournament name</label><input id="tournamentName" placeholder="e.g. IPL 2027"></div><div class="field"><label>League invitation</label><input id="generatedInviteCode" readonly placeholder="Generate a secure invitation code"></div><button class="btn" type="button" id="generateInviteButton">Generate / regenerate invitation code</button><div id="inviteAdminMessage" class="auth-message muted" role="status"></div><div class="field"><label>Admin / commissioner name</label><input id="adminName" value="Commissioner"></div><button class="btn primary" onclick="saveSettings()">Save settings</button><div id="adminMessage"></div></div>
+<div class="card"><h3>Supabase player pool</h3><p class="muted">The 124 BBL players and their tournament credit values are retrieved directly from Supabase. Edit player records and credit values in the database, not in this local prototype.</p><p class="muted" id="poolCount"></p></div></div>
+<div class="sectionhead"><h2>Scoring rules</h2><span class="muted">T20 defaults · configurable in production</span></div>
+<div class="card"><table class="table"><thead><tr><th>Action</th><th>Points</th><th>Action</th><th>Points</th></tr></thead><tbody>
+<tr><td>Run</td><td>+1</td><td>Four bonus</td><td>+1</td></tr><tr><td>Six bonus</td><td>+2</td><td>Wicket</td><td>+25</td></tr><tr><td>Bowled / LBW bonus</td><td>+8</td><td>Catch</td><td>+8</td></tr><tr><td>Run out</td><td>+12</td><td>Stumping</td><td>+16</td></tr><tr><td>Maiden over</td><td>+16</td><td>Man of the Match</td><td>+20</td></tr><tr><td>Captain multiplier</td><td>2×</td><td>Vice-captain</td><td>1.5×</td></tr>
+</tbody></table><p class="muted">Wicket-haul, strike-rate and economy-rate tiers will be finalised as explicit rules before the live scoring integration. All scoring should be versioned per tournament.</p></div>
+<div class="sectionhead"><h2>Demo scoring simulator</h2><span class="muted">For testing only</span></div>
+<div class="card"><p class="muted">Add a sample score to a manager to test leaderboard sorting. This does not represent a real match feed.</p><div class="field"><label>Manager</label><input id="scoreManager" value="You"></div><div class="field"><label>Points to add</label><input id="scoreValue" type="number" value="100"></div><button class="btn primary" onclick="addDemoScore()">Add demo points</button></div>
+<div class="actions"><button class="btn" onclick="exportData()">Export league data (JSON)</button><button class="btn" onclick="resetAll()">Reset local prototype</button></div>
+</section>
+</main><footer>Blood, Sweat &amp; Boundaries · Private fantasy cricket · TLF interface refresh · Version 1.1</footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const seedPlayers=[
+["Virat Kohli","India","Batter"],["Rohit Sharma","India","Batter"],["Jasprit Bumrah","India","Bowler"],["Hardik Pandya","India","All-rounder"],["Rishabh Pant","India","Wicketkeeper"],["Suryakumar Yadav","India","Batter"],["Ravindra Jadeja","India","All-rounder"],["Shubman Gill","India","Batter"],["Kuldeep Yadav","India","Bowler"],["KL Rahul","India","Wicketkeeper"],["Mohammed Siraj","India","Bowler"],["Jos Buttler","England","Wicketkeeper"],["Ben Stokes","England","All-rounder"],["Jofra Archer","England","Bowler"],["Joe Root","England","Batter"],["Babar Azam","Pakistan","Batter"],["Shaheen Afridi","Pakistan","Bowler"],["Kane Williamson","New Zealand","Batter"],["Trent Boult","New Zealand","Bowler"],["Glenn Maxwell","Australia","All-rounder"],["Pat Cummins","Australia","Bowler"],["David Warner","Australia","Batter"],["Heinrich Klaasen","South Africa","Wicketkeeper"],["Kagiso Rabada","South Africa","Bowler"],["Nicholas Pooran","West Indies","Wicketkeeper"],["Andre Russell","West Indies","All-rounder"],["Rashid Khan","Afghanistan","Bowler"],["Pathum Nissanka","Sri Lanka","Batter"],["Shakib Al Hasan","Bangladesh","All-rounder"],["Litton Das","Bangladesh","Wicketkeeper"]
+].map((p,i)=>({id:i+1,name:p[0],team:p[1],role:p[2]}));
+const defaults={tournament:"Not set",invite:"BSB-FRIENDS",admin:"Commissioner",players:seedPlayers,squad:[],xi:[],captain:"",vice:"",scores:[{name:"You",points:0,matches:0},{name:"Friend 1",points:0,matches:0},{name:"Friend 2",points:0,matches:0},{name:"Friend 3",points:0,matches:0}]};
+let db=JSON.parse(localStorage.getItem("bsb_db")||"null")||defaults;
+function persist(){localStorage.setItem("bsb_db",JSON.stringify(db));}
+function showPage(id){
+ if(id!=="join" && !currentLeagueMember && currentAccountRole!=="super_admin" && !currentLeagueOwner) id="join";
+ if(id==="admin" && !(currentAccountRole==="super_admin" || currentLeagueOwner)) id="home";
+ document.querySelectorAll(".page").forEach(p=>p.classList.toggle("hidden",p.id!==id));
+ document.querySelectorAll(".navlinks button").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
+}
+document.querySelectorAll("[data-page]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
+// Match Centre selector scaffold. Match IDs and fixture details will come from Supabase;
+// the options below are only match numbers for the already-imported BBL league schedule.
+const mcMatch=document.getElementById("mcMatch");
+let bblFixtures=[];
+let lockedFixtureIds=new Set();
+let activeLineupId=null,activeLineupStatus="draft",activeLineupMatch=null,matchStartingXI=[],matchCaptainId="",matchViceId="",lineupSettings=null,substitutionStatus=null;
+mcMatch.addEventListener("change",()=>{document.getElementById("mcOpen").disabled=!mcMatch.value;renderSelectedFixture()});
+document.getElementById("mcStage").addEventListener("change",renderMatchOptions);
+async function openMatchWorkspace(){
+ const match=bblFixtures.find(m=>m.id===mcMatch.value);if(!match)return;
+ document.getElementById("mcSelectedTitle").textContent=match.match_name||`Match ${match.match_number}`;
+ document.getElementById("mcFixtureDetails").innerHTML=fixtureMarkup(match);
+ document.getElementById("mcWorkspace").hidden=false;
+ activeLineupMatch=match;
+ lineupMessage("Loading your saved 11-player tournament team…");
+ const result=await loadSavedTournamentSquad();
+ if(!result.ok||db.squad.length!==11){
+  activeLineupId=null;activeLineupStatus="draft";matchStartingXI=[];matchCaptainId="";matchViceId="";
+  renderMatchLineup();lineupMessage(result.message||`Your saved tournament team is incomplete (${db.squad.length}/11).`);
+  return;
+ }
+ await loadMatchLineup(match);
+ await loadSubstitutionStatus(match);
+}
+function roleLabel(code){return ({WK:"Wicketkeeper",BAT:"Batter",AR:"All-rounder",BOWL:"Bowler"})[code]||code||"Role not set"}
+function dateLabel(value,zone){if(!value)return "Not scheduled";return new Intl.DateTimeFormat("en-IN",{dateStyle:"medium",timeStyle:"short",timeZone:zone}).format(new Date(value))}
+function fixtureMarkup(m){return `<div class="row"><span><b>${esc(m.home_name||"TBC")}</b> vs <b>${esc(m.away_name||"TBC")}</b></span><span class="pill">${esc(m.status||"Scheduled")}</span></div><div class="row"><span>Start (IST)</span><b>${esc(dateLabel(m.starts_at,"Asia/Kolkata"))}</b></div><div class="row"><span>Start (Melbourne)</span><b>${esc(dateLabel(m.starts_at,"Australia/Melbourne"))}</b></div><div class="row"><span>Venue</span><b>${esc(m.venue||"Venue TBC")}</b></div><div class="row"><span>Selection deadline</span><b>${esc(dateLabel(m.selection_deadline,"Asia/Kolkata"))}</b></div><div class="row"><span>Stage</span><b>${esc(m.match_stage||"Not specified")}</b></div>`}
+function renderMatchOptions(){const stage=document.getElementById("mcStage").value;const filtered=stage==="all"?bblFixtures:bblFixtures.filter(m=>(m.match_stage||"").toLowerCase()===stage.toLowerCase());const previous=mcMatch.value;mcMatch.innerHTML='<option value="">Choose a match</option>'+filtered.map(m=>`<option value="${m.id}">Match ${m.match_number}: ${esc(m.home_name)} vs ${esc(m.away_name)}</option>`).join("");if(filtered.some(m=>m.id===previous))mcMatch.value=previous;document.getElementById("mcOpen").disabled=!mcMatch.value;renderSelectedFixture();}
+function renderSelectedFixture(){const m=bblFixtures.find(x=>x.id===mcMatch.value);document.getElementById("matchDetails").innerHTML=m?fixtureMarkup(m):"";}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function msg(id,text,className="notice"){
+ const el=document.getElementById(id);
+ if(!el)return;
+ el.textContent=String(text);
+ el.className=className;
+ el.setAttribute("role","status");
+}
+function lineupMessage(text,className="notice"){
+ const el=document.getElementById("matchLineupMessage");
+ if(!el)return;
+ el.textContent=String(text);
+ el.className=className;
+ el.setAttribute("role","status");
+}
+// Resolve player records consistently because Supabase UUIDs are strings.
+function idKey(id){return id===null||id===undefined?"":String(id);}
+function lineupPlayer(id){const key=idKey(id);return db.players.find(p=>idKey(p.id)===key)||null;}
+function lineupPlayerName(id){return lineupPlayer(id)?.name||"Not selected";}
+const squadRoleRules=[["WK","Wicketkeeper",1,4],["BAT","Batter",3,6],["AR","All-rounder",1,4],["BOWL","Bowler",3,6]];
+function squadRoleCounts(ids=db.squad){const counts={WK:0,BAT:0,AR:0,BOWL:0};ids.map(lineupPlayer).filter(Boolean).forEach(p=>{if(counts[p.role]!==undefined)counts[p.role]++;});return counts;}
+function squadRoleErrors(ids=db.squad){
+ const counts=squadRoleCounts(ids),errors=[];
+ const configured=lineupSettings?[
+  ["WK","Wicketkeeper",Number(lineupSettings.min_wicketkeepers),Number(lineupSettings.max_wicketkeepers)],
+  ["BAT","Batter",Number(lineupSettings.min_batsmen),Number(lineupSettings.max_batsmen)],
+  ["AR","All-rounder",Number(lineupSettings.min_allrounders),Number(lineupSettings.max_allrounders)],
+  ["BOWL","Bowler",Number(lineupSettings.min_bowlers),Number(lineupSettings.max_bowlers)]
+ ]:squadRoleRules;
+ for(const [code,label,min,max] of configured){
+  if(!Number.isFinite(min)||!Number.isFinite(max)){errors.push(`${label} limits are unavailable in tournament settings.`);continue;}
+  if(counts[code]<min||counts[code]>max)errors.push(`${label}: required ${min}–${max}, currently ${counts[code]}.`);
+ }
+ return errors;
+}
+function playerIllustration(p){
+ const role=String(p.role||'').toLowerCase(),isBowl=role.includes('bowl'),isKeeper=role.includes('keep'),isAll=role.includes('all');
+ const palette=isBowl?['#dce8ff','#4564a5']:isKeeper?['#ffe5d6','#b95f3d']:isAll?['#f2e3ff','#8053a8']:['#e0f3d9','#3e8651'];
+ const initials=String(p.name||'').split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase();
+ return `<svg viewBox="0 0 72 82" role="img" aria-label="Illustrated player portrait"><defs><linearGradient id="pg${safeSvgId(p.id)}" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${palette[0]}"/><stop offset="1" stop-color="#fff"/></linearGradient></defs><rect width="72" height="82" rx="13" fill="url(#pg${safeSvgId(p.id)})"/><circle cx="36" cy="25" r="13" fill="#b97853"/><path d="M22 25q1-17 14-17t14 17q-6-7-14-7t-14 7" fill="#202a29"/><path d="M13 82q2-30 23-30t23 30" fill="${palette[1]}"/><path d="M30 53l6 9 6-9" fill="#f7f7f2"/><path d="M36 63v17" stroke="#f7f7f2" stroke-width="2"/><rect x="5" y="5" width="22" height="14" rx="6" fill="#ffffffb8"/><text x="16" y="15" font-size="8" text-anchor="middle" font-weight="800" fill="#20352b">${initials}</text></svg>`;
+}
+function safeSvgId(value){return String(value).replace(/[^a-zA-Z0-9]/g,'').slice(0,18)||'player';}
+function nextUpcomingFixture(){const now=Date.now();return bblFixtures.filter(m=>m.starts_at&&new Date(m.starts_at).getTime()>=now&&(!m.selection_deadline||new Date(m.selection_deadline).getTime()>now)&&!lockedFixtureIds.has(idKey(m.id))&&!['completed','complete','finished','abandoned','cancelled'].includes(String(m.status||'').toLowerCase())).sort((a,b)=>new Date(a.starts_at)-new Date(b.starts_at))[0]||null;}
+function teamMonogram(name){return String(name||'TBC').split(/\s+/).map(x=>x[0]).join('').slice(0,3).toUpperCase();}
+function openUpcomingFixture(){const m=nextUpcomingFixture();if(!m)return;showPage('team');const target=document.getElementById('playerPool')||document.getElementById('team');target.scrollIntoView({behavior:'smooth',block:'start'});}
+function renderUpcomingMatch(){
+ const m=nextUpcomingFixture();
+ const markup=m?`<div class="tlf-match-card"><div><div class="eyebrow">Your next TLF fixture · Match ${esc(m.match_number)}</div><h2>${esc(m.home_name||'TBC')} <span style="color:#b9f36b">vs</span> ${esc(m.away_name||'TBC')}</h2><div class="match-versus"><div class="match-side"><div class="team-monogram">${esc(teamMonogram(m.home_name))}</div><strong>${esc(m.home_name||'Team TBC')}</strong></div><div class="versus">VS</div><div class="match-side"><div class="team-monogram">${esc(teamMonogram(m.away_name))}</div><strong>${esc(m.away_name||'Team TBC')}</strong></div></div><div class="match-meta"><span class="meta-chip">${esc(dateLabel(m.starts_at,'Asia/Kolkata'))} IST</span><span class="meta-chip">${esc(m.venue||'Venue TBC')}</span><span class="meta-chip">Deadline: ${esc(dateLabel(m.selection_deadline,'Asia/Kolkata'))}</span></div></div><div class="match-action-panel"><div><div class="eyebrow">Time until selection deadline</div><div class="countdown" data-countdown="${esc(m.selection_deadline||m.starts_at)}">${countdownLabel(m.selection_deadline||m.starts_at)}</div><p class="muted" style="font-size:13px">Make your team changes before the selection deadline. Locked fixtures cannot be edited.</p></div><button class="btn primary" onclick="openUpcomingFixture()">EDIT TEAM FOR NEXT MATCH →</button></div></div>`:`<div class="tlf-match-card"><div><div class="eyebrow">Tournament Long Fantasy</div><h2>No upcoming fixture found</h2><p class="muted">The next match will appear here once a future fixture is available in the tournament schedule.</p></div><div class="match-action-panel"><div class="match-empty">Fixture schedule is loaded from your tournament database.</div><button class="btn" onclick="showPage('matchcentre')">Open Match Centre</button></div></div>`;
+ ['homeNextMatch','teamNextMatch'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=markup;});
+}
+function countdownLabel(value){const diff=new Date(value).getTime()-Date.now();if(!Number.isFinite(diff))return 'Schedule TBC';if(diff<=0)return 'Starting now';const d=Math.floor(diff/86400000),h=Math.floor(diff%86400000/3600000),m=Math.floor(diff%3600000/60000);return d?`${d}d ${h}h ${m}m`:`${h}h ${m}m`}
+function refreshCountdowns(){document.querySelectorAll('[data-countdown]').forEach(el=>el.textContent=countdownLabel(el.dataset.countdown));}
+function renderPlayers(){
+ let q=(document.getElementById("playerSearch")?.value||"").toLowerCase(),el=document.getElementById("playerPool");if(!el)return;
+ el.innerHTML=db.players.filter(p=>(p.name+" "+p.team+" "+p.role).toLowerCase().includes(q)).map(p=>`<label class="player"><input type="checkbox" ${db.squad.some(id=>idKey(id)===idKey(p.id))?"checked":""} onchange="toggleSquad('${p.id}',this.checked)" ${db.squad.length>=11&&!db.squad.some(id=>idKey(id)===idKey(p.id))?"disabled":""}><span class="player-art">${playerIllustration(p)}</span><span class="player-copy"><b>${esc(p.name)}</b><small>${esc(p.team)} · ${esc(roleLabel(p.role))}</small></span><span class="player-credit">${p.credit===null?"TBC":esc(p.credit)}</span></label>`).join("")||'<div class="empty">No players found.</div>';
+ document.getElementById("squadCount").textContent=db.squad.length+" / 11 selected";
+ const c=squadRoleCounts(),summary=document.getElementById("squadRoleSummary");
+ if(summary)summary.textContent=`WK ${c.WK}/1–4 · BAT ${c.BAT}/3–6 · AR ${c.AR}/1–4 · BOWL ${c.BOWL}/3–6`;
+}
+
+function toggleSquad(id,on){
+ const player=lineupPlayer(id);
+ if(on){
+  if(db.squad.includes(id))return;
+  if(db.squad.length>=11){alert("Your tournament team is limited to 11 players.");renderPlayers();return;}
+  const roleRule=squadRoleRules.find(r=>r[0]===player?.role);
+  if(!roleRule){alert("This player's category is not recognised. Please check the player record.");renderPlayers();return;}
+  const current=squadRoleCounts()[player.role];
+  if(current>=roleRule[3]){alert(`${roleRule[1]} limit reached. Your tournament team can contain a maximum of ${roleRule[3]} ${roleRule[1].toLowerCase()} players.`);renderPlayers();return;}
+  db.squad=[...db.squad,id];
+ }else db.squad=db.squad.filter(x=>x!==id);
+ db.xi=db.xi.filter(x=>db.squad.includes(x));
+ if(!db.squad.includes(db.captain))db.captain="";
+ if(!db.squad.includes(db.vice))db.vice="";
+ persist();renderPlayers();renderXI();
+}
+
+function resetTeam(){
+ // Clear only the current browser-side selection. Do not delete the saved
+ // Supabase squad unless the user explicitly saves a different valid team.
+ db.squad=[];
+ db.xi=[];
+ db.captain="";
+ db.vice="";
+ persist();
+ renderPlayers();
+ renderXI();
+ if(typeof renderMatchLineup==="function" && activeLineupMatch)renderMatchLineup();
+ msg("teamMessage","Selections cleared. Your previously saved Supabase squad has not been deleted.","notice");
+}
+
+function renderXI(){
+ const chosen=db.players.filter(p=>db.squad.includes(p.id));
+ const summary=document.getElementById("selectedSummary");
+ if(summary)summary.innerHTML=`<strong>${chosen.length} of 11 selected</strong><div class="squad-progress"><span style="width:${Math.min(chosen.length/11*100,100)}%"></span></div><div class="muted" style="font-size:12px">Your saved XI becomes the starting pool for the next unlocked fixture.</div>`;
+ const status=document.getElementById("squadSelectionStatus");
+ if(status)status.textContent=`${chosen.length} / 11`;
+}
+
+async function saveTeam(){
+ const button=document.getElementById("saveTeamButton");
+ if(!button)return;
+ if(!currentUserId){msg("teamMessage","Please sign in before saving your team.","notice");return;}
+ if(!lineupSettings){msg("teamMessage","Tournament budget and role settings could not be loaded. Refresh the page and try again; the squad has not been saved.","notice");return;}
+ if(db.squad.length!==11){msg("teamMessage",`Select exactly 11 players. You currently have ${db.squad.length}. The squad has not been saved.`,"notice");return;}
+ if(new Set(db.squad).size!==11){msg("teamMessage","Your team contains duplicate players. The squad has not been saved.","notice");return;}
+ const selected=db.squad.map(lineupPlayer);
+ if(selected.some(p=>!p)){msg("teamMessage","One or more selected players are no longer in the active BBL pool. Reload the player list. The squad has not been saved.","notice");return;}
+ if(selected.some(p=>p.credit===null||p.credit===undefined||!Number.isFinite(Number(p.credit)))){msg("teamMessage","At least one selected player has no valid credit value. The squad has not been saved.","notice");return;}
+ const categoryErrors=squadRoleErrors(db.squad);
+ if(categoryErrors.length){msg("teamMessage","Team rejected. Correct the role limits first: "+categoryErrors.join(" ")+" The squad has not been saved.","notice");return;}
+ const totalCredits=selected.reduce((sum,p)=>sum+Number(p.credit),0);
+ const budget=Number(lineupSettings.starting_xi_budget);
+ if(!Number.isFinite(budget)){msg("teamMessage","The tournament credit budget is missing or invalid. The squad has not been saved.","notice");return;}
+ if(totalCredits>budget){msg("teamMessage",`Team rejected. Your selected players cost ${totalCredits.toFixed(1)} credits, exceeding the ${budget.toFixed(1)}-credit budget. Reduce the cost before saving. The squad has not been saved.`,"notice");return;}
+ button.disabled=true;button.textContent="Saving…";
+ msg("teamMessage",`All checks passed (${totalCredits.toFixed(1)} / ${budget.toFixed(1)} credits). Saving your 11-player team…`,"notice");
+ try{
+  const {data:squad,error:squadError}=await supabaseClient.from("fantasy_squads")
+   .upsert({
+    tournament_id: BBL_TOURNAMENT_ID,
+    user_id: currentUserId,
+    fantasy_team_name: `${currentDisplayName || "Participant"} BBL Team`
+   }, {onConflict: "tournament_id,user_id"}).select("id").single();
+  if(squadError)throw squadError;
+  currentFantasySquadId=squad.id;
+  const {data:existing,error:readError}=await supabaseClient.from("squad_players").select("player_id").eq("squad_id",squad.id);
+  if(readError)throw readError;
+  const existingIds=new Set((existing||[]).map(x=>x.player_id)),desiredIds=new Set(db.squad);
+  const toAdd=[...desiredIds].filter(id=>!existingIds.has(id)),toRemove=[...existingIds].filter(id=>!desiredIds.has(id));
+  if(toAdd.length){const {error}=await supabaseClient.from("squad_players").insert(toAdd.map(player_id=>({squad_id:squad.id,player_id})));if(error)throw error;}
+  if(toRemove.length){const {error}=await supabaseClient.from("squad_players").delete().eq("squad_id",squad.id).in("player_id",toRemove);if(error)throw error;}
+  persist();
+  msg("teamMessage",`Saved successfully. Your 11-player team (${totalCredits.toFixed(1)} / ${budget.toFixed(1)} credits) is stored in Supabase. This becomes your team for the next unlocked fixture; locked match lineups stay unchanged.`,"notice success");
+  if(activeLineupMatch && !document.getElementById("mcWorkspace").hidden){await loadSubstitutionStatus(activeLineupMatch);}
+ }catch(error){
+  console.error("Tournament squad save failed:",error);
+  msg("teamMessage","Could not save your team: "+(error.message||String(error))+" (Code: "+(error.code||"not provided")+"). Your previous saved squad has not intentionally been cleared.","notice");
+ }finally{
+  button.disabled=false;button.textContent="Save tournament squad";renderPlayers();renderXI();
+ }
+}
+
+function renderMatchLineup(){
+ const xiBox=document.getElementById("matchXiList");
+ const captain=document.getElementById("matchCaptain"),vice=document.getElementById("matchVice");
+ const displayIds=activeLineupStatus==="locked"?matchStartingXI:db.squad;
+ if(!activeLineupMatch||!currentFantasySquadId||displayIds.length!==11){
+  xiBox.innerHTML='<div class="empty">Your 11-player team could not be loaded. Check the message below.</div>';
+  document.getElementById("xiCounter").textContent=`${displayIds.length} / 11`;
+  captain.innerHTML='<option value="">Saved team unavailable</option>';vice.innerHTML='<option value="">Saved team unavailable</option>';
+  captain.disabled=vice.disabled=true;
+  document.getElementById("matchLineupSummary").textContent="The saved tournament team is not available.";
+  document.getElementById("saveMatchLineupButton").disabled=true;
+  return;
+ }
+ const displayPlayers=displayIds.map(lineupPlayer).filter(Boolean);
+ matchStartingXI=[...displayIds.map(idKey)];
+ document.getElementById("xiCounter").textContent=`${displayPlayers.length} / 11`;
+ xiBox.innerHTML=displayPlayers.map(p=>`<div class="player match-player-row"><span class="player-art">${playerIllustration(p)}</span><span class="player-copy"><b>${esc(p.name)}</b><small>${esc(roleLabel(p.role))} · ${p.credit===null?"Credit TBC":`${esc(p.credit)} credits`}</small></span></div>`).join("");
+ const opts='<option value="">Select player</option>'+displayPlayers.map(p=>`<option value="${esc(idKey(p.id))}">${esc(p.name)}</option>`).join("");
+ captain.innerHTML=opts;vice.innerHTML=opts;
+ captain.value=displayIds.map(idKey).includes(idKey(matchCaptainId))?idKey(matchCaptainId):"";
+ vice.value=displayIds.map(idKey).includes(idKey(matchViceId))?idKey(matchViceId):"";
+ captain.disabled=vice.disabled=activeLineupStatus==="locked";
+ captain.onchange=()=>{matchCaptainId=idKey(captain.value);renderMatchLineupSummaryOnly();};
+ vice.onchange=()=>{matchViceId=idKey(vice.value);renderMatchLineupSummaryOnly();};
+ renderMatchLineupSummaryOnly();
+ const locked=activeLineupStatus==="locked";
+ document.getElementById("lineupStatusPill").textContent=locked?"LOCKED":"DRAFT";
+ document.getElementById("saveMatchLineupButton").disabled=locked;
+ document.getElementById("lineupNotice").textContent=locked?"This fixture's locked XI is shown as it was saved. Later changes to My Squad do not alter this historical lineup.":"Your current saved 11 players are loaded automatically. Change the team in My Squad before this fixture, then choose captain and vice-captain here.";
+}
+function renderMatchLineupSummaryOnly(){
+ const xi=matchStartingXI.map(lineupPlayer).filter(Boolean),credits=xi.reduce((sum,p)=>sum+(Number(p.credit)||0),0),counts={WK:0,BAT:0,AR:0,BOWL:0};
+ xi.forEach(p=>{const role=({Wicketkeeper:"WK",Batter:"BAT","All-rounder":"AR",Bowler:"BOWL"})[p.role]||p.role;if(counts[role]!==undefined)counts[role]++;});
+ document.getElementById("matchLineupSummary").innerHTML=`<div class="lineup-metric"><span>Tournament team</span><b>${xi.length}/11 players</b></div><div class="lineup-metric"><span>Credits</span><b>${credits.toFixed(1)} / ${lineupSettings?.starting_xi_budget??"—"}</b></div><div class="lineup-metric"><span>WK · BAT · AR · BOWL</span><b>${counts.WK} · ${counts.BAT} · ${counts.AR} · ${counts.BOWL}</b></div><div class="lineup-metric"><span>Captain</span><b>${esc(lineupPlayerName(matchCaptainId))}</b></div><div class="lineup-metric"><span>Vice-captain</span><b>${esc(lineupPlayerName(matchViceId))}</b></div>`;
+}
+async function loadMatchLineup(match){
+ activeLineupId=null;activeLineupStatus="draft";matchStartingXI=db.squad.map(idKey);matchCaptainId="";matchViceId="";
+ if(!currentFantasySquadId||db.squad.length!==11){renderMatchLineup();lineupMessage("Your saved 11-player tournament team is unavailable.");return;}
+ lineupMessage("Loading this fixture's saved captaincy…");
+ const {data:lineup,error}=await supabaseClient.from("match_lineups").select("id,captain_player_id,vice_captain_player_id,status,locked_at").eq("squad_id",currentFantasySquadId).eq("match_id",match.id).maybeSingle();
+ if(error){renderMatchLineup();lineupMessage("Could not load this fixture's saved captaincy: "+error.message+" ("+(error.code||"no code")+").");return;}
+ if(lineup){
+  activeLineupId=lineup.id;activeLineupStatus=lineup.status||"draft";
+  const cap=idKey(lineup.captain_player_id),vice=idKey(lineup.vice_captain_player_id);
+  if(activeLineupStatus==="locked"){
+   const {data:storedPlayers,error:playersError}=await supabaseClient.from("match_lineup_players").select("player_id").eq("lineup_id",lineup.id).eq("selection_type","starter");
+   if(playersError){lineupMessage("This lineup is locked, but its saved players could not be loaded: "+playersError.message);return;}
+   matchStartingXI=(storedPlayers||[]).map(x=>idKey(x.player_id));
+   matchCaptainId=matchStartingXI.includes(cap)?cap:"";matchViceId=matchStartingXI.includes(vice)&&vice!==cap?vice:"";
+  }else{
+   // An editable draft always previews the latest saved tournament squad.
+   matchStartingXI=db.squad.map(idKey);
+   matchCaptainId=db.squad.map(idKey).includes(cap)?cap:"";matchViceId=db.squad.map(idKey).includes(vice)&&vice!==matchCaptainId?vice:"";
+  }
+ }
+ renderMatchLineup();
+ lineupMessage(activeLineupStatus==="locked"?"Your locked fixture XI has been loaded from its historical match record.":(activeLineupId?"Your draft is ready. The latest My Squad team is loaded; save to update this fixture.":"Your saved 11-player tournament team is loaded. Choose captain and vice-captain, then save this fixture."),"notice success");
+}
+window.adminLockAllTeams = async function(){
+ const output=document.getElementById("adminBulkLockMessage");
+ const button=document.getElementById("adminBulkLockButton");
+ if(currentAccountRole!=="super_admin"){
+  output.textContent="Access denied: this action is restricted to the super admin.";
+  return;
+ }
+ if(!activeLineupMatch || !activeLineupMatch.id){
+  output.textContent="No match is open. Select a fixture and click Open match workspace first.";
+  return;
+ }
+ if(activeLineupStatus==="locked"){
+  output.textContent="Your lineup for this match is already locked. The bulk operation can still process other participants; continue only if this is the intended fixture.";
+ }
+ if(!confirm("Lock all participants' teams for this selected match? Existing locked teams will remain unchanged."))return;
+
+ button.disabled=true;
+ output.textContent="Sending bulk-lock request to Supabase…";
+ try{
+  const {data,error}=await supabaseClient.rpc(
+   "admin_lock_all_tournament_teams",
+   {p_match_id:activeLineupMatch.id}
+  );
+  if(error)throw error;
+  const result=data||{};
+  const locked=Number(result.locked_count||0);
+  const already=Number(result.already_locked_count||0);
+  const attention=Number(result.needs_attention_count||0);
+  const participants=Array.isArray(result.participants)?result.participants:[];
+  const lines=participants.map(item=>{
+   const name=item.display_name||item.user_name||("Squad "+(item.squad_id||"unknown"));
+   return name+": "+(item.result||"processed")+(item.reason?" — "+item.reason:"");
+  });
+  output.textContent=
+   "Bulk lock completed. Newly locked: "+locked+
+   ". Already locked: "+already+
+   ". Needs attention: "+attention+
+   (lines.length?"\n"+lines.join("\n"):"\nNo participant squads were found for this tournament.");
+  await loadSubstitutionStatus(activeLineupMatch);
+ }catch(error){
+  console.error("Admin bulk lock failed:",error);
+  output.textContent="Bulk lock failed: "+(error.message||String(error));
+ }finally{
+  button.disabled=false;
+ }
+};
+
+window.adminCalculateMatchScores = async function(){
+ const button=document.getElementById("adminCalculateScoresButton");
+ const output=document.getElementById("adminCalculateScoresMessage");
+ const results=document.getElementById("adminCalculateScoresResults");
+ if(currentAccountRole!=="super_admin"){
+  output.textContent="Access denied: only the super administrator can calculate match scores.";
+  results.innerHTML="";
+  return;
+ }
+ if(!activeLineupMatch || !activeLineupMatch.id){
+  output.textContent="No match is open. Select a fixture and click Open match workspace first.";
+  results.innerHTML="";
+  return;
+ }
+ if(!confirm("Calculate or recalculate fantasy scores for every valid locked team in this match?"))return;
+ button.disabled=true;
+ output.textContent="Calculating scores for all locked teams…";
+ results.innerHTML="";
+ try{
+  const {data,error}=await supabaseClient.rpc(
+   "commissioner_calculate_match_scores",
+   {p_match_id:activeLineupMatch.id}
+  );
+  if(error)throw error;
+  const rows=Array.isArray(data)?data:(data?[data]:[]);
+  if(!rows.length){
+   output.textContent="The scoring function returned no teams. Check that this match has valid locked lineups.";
+   return;
+  }
+  output.textContent=`Scoring completed successfully. ${rows.length} locked team${rows.length===1?"":"s"} calculated. You can run this again after correcting statistics.`;
+  results.innerHTML=`<table class="table"><thead><tr><th>FANTASY TEAM</th><th>POINTS</th></tr></thead><tbody>${rows.map(row=>`<tr><td>${esc(row.fantasy_team_name||("Squad "+(row.squad_id||"")))}</td><td><strong>${Number(row.total_points||0).toFixed(2)}</strong></td></tr>`).join("")}</tbody></table>`;
+  await loadDashboardData();
+ }catch(error){
+  console.error("Commissioner match scoring failed:",error);
+  output.textContent="Match scoring failed: "+(error.message||String(error));
+  results.innerHTML="";
+ }finally{
+  button.disabled=false;
+ }
+};
+
+async function loadSubstitutionStatus(match){
+ const box=document.getElementById("substitutionTracker"),pill=document.getElementById("substitutionPhasePill");
+ if(!currentFantasySquadId||!match){box.textContent="Open a fixture to see substitution usage.";pill.textContent="Select a match";return;}
+ box.textContent="Calculating substitution usage…";pill.textContent="Loading";
+ const {data,error}=await supabaseClient.rpc("get_tournament_substitution_status",{p_squad_id:currentFantasySquadId,p_match_id:match.id});
+ if(error){box.textContent="Substitution tracker unavailable: "+error.message+". Apply the substitution tracker SQL update, then refresh.";pill.textContent="Unavailable";console.error("Substitution tracker error",error);return;}
+ const row=Array.isArray(data)?data[0]:data;
+ if(!row){box.textContent="No substitution phase is configured for this fixture.";pill.textContent="Not configured";return;}
+ substitutionStatus=row;
+ const used=Number(row.used_substitutions||0),proposed=Number(row.proposed_substitutions||0),allowance=Number(row.substitution_allowance||0);
+ const phaseLabel=row.phase_name||row.phase_type||"Substitution phase";
+ pill.textContent=phaseLabel;
+ const previous=row.previous_match_number?`Compared with Match ${row.previous_match_number}`:"No earlier locked XI — first match";
+ const proposedLabel=activeLineupStatus==="locked"?"Changes in this locked match":"Proposed changes for this fixture";
+ if(row.is_unlimited){
+  box.innerHTML=`<div class="lineup-metric"><span>Phase</span><b>${esc(phaseLabel)}</b></div><div class="lineup-metric"><span>Substitutions already used</span><b>${used}</b></div><div class="lineup-metric"><span>${esc(proposedLabel)}</span><b>${activeLineupStatus==="locked"?0:proposed}</b></div><div class="lineup-metric"><span>Allowance</span><b>Unlimited</b></div><p class="muted" style="font-size:12px">${esc(previous)}. No substitution cap applies in this transition phase.</p>`;
+ }else{
+  const after=used+(activeLineupStatus==="locked"?0:proposed),remaining=Math.max(allowance-after,0),over=after>allowance;
+  box.innerHTML=`<div class="lineup-metric"><span>Phase</span><b>${esc(phaseLabel)}</b></div><div class="lineup-metric"><span>Already used</span><b>${used} / ${allowance}</b></div><div class="lineup-metric"><span>${esc(proposedLabel)}</span><b>${activeLineupStatus==="locked"?0:proposed}</b></div><div class="lineup-metric"><span>Remaining after this team</span><b>${remaining}</b></div><p class="muted" style="font-size:12px">${esc(previous)}.</p>${over?'<div class="notice">This team exceeds the phase allowance. It cannot be locked.</div>':''}`;
+ }
+}
+
+function validateMatchLineup(){
+ const errors=[],ids=db.squad.map(idKey),unique=new Set(ids);
+ if(ids.length!==11||unique.size!==11)errors.push("Your saved tournament team must contain exactly 11 distinct players.");
+ const players=ids.map(lineupPlayer);
+ if(players.some(p=>!p))errors.push("One or more saved squad players are missing from the active BBL player pool.");
+ if(!matchCaptainId||!matchViceId||idKey(matchCaptainId)===idKey(matchViceId)||!unique.has(idKey(matchCaptainId))||!unique.has(idKey(matchViceId)))errors.push("Choose two different players from your saved 11 as captain and vice-captain.");
+ if(!lineupSettings)errors.push("Tournament lineup rules could not be loaded.");
+ if(players.length===11&&players.every(Boolean)&&lineupSettings){
+  const roleMap={WK:"WK",BAT:"BAT",AR:"AR",BOWL:"BOWL",Wicketkeeper:"WK",Batter:"BAT","All-rounder":"AR",Bowler:"BOWL"},counts={WK:0,BAT:0,AR:0,BOWL:0};
+  players.forEach(p=>{const r=roleMap[p.role];if(r)counts[r]++;});
+  const rules=[["WK","Wicketkeeper","min_wicketkeepers","max_wicketkeepers"],["BAT","Batter","min_batsmen","max_batsmen"],["AR","All-rounder","min_allrounders","max_allrounders"],["BOWL","Bowler","min_bowlers","max_bowlers"]];
+  for(const [code,label,minKey,maxKey] of rules){const min=Number(lineupSettings[minKey]),max=Number(lineupSettings[maxKey]);if(!Number.isFinite(min)||!Number.isFinite(max))errors.push(`${label} limits are unavailable.`);else if(counts[code]<min||counts[code]>max)errors.push(`${label} limit: required ${min}–${max}; current ${counts[code]}.`);}
+  if(players.some(p=>p.credit===null||p.credit===undefined||!Number.isFinite(Number(p.credit))))errors.push("A selected player has no valid credit value.");
+  else{const credits=players.reduce((sum,p)=>sum+Number(p.credit),0),budget=Number(lineupSettings.starting_xi_budget);if(!Number.isFinite(budget))errors.push("Tournament credit budget is unavailable.");else if(credits>budget)errors.push(`Your saved team costs ${credits.toFixed(1)} credits, exceeding the ${budget.toFixed(1)}-credit budget.`);}
+ }
+ return errors;
+}
+async function saveMatchLineup(){
+ if(!activeLineupMatch){lineupMessage("Choose and open a match first.");return;}
+ if(!currentFantasySquadId){lineupMessage("Save your 11-player tournament team first.");return;}
+ if(activeLineupStatus==="locked"){lineupMessage("This lineup is already locked.");return;}
+ const validationErrors=validateMatchLineup();
+ if(validationErrors.length){document.getElementById("lineupNotice").className="notice";document.getElementById("lineupNotice").textContent="Lineup cannot be saved: "+validationErrors.join(" ");lineupMessage("Save rejected. "+validationErrors.join(" "),"notice");return;}
+ const button=document.getElementById("saveMatchLineupButton");button.disabled=true;lineupMessage("Saving this match lineup to Supabase…");
+ try{
+  let id=activeLineupId;
+  if(id){
+   const {error}=await supabaseClient.from("match_lineups").update({captain_player_id:matchCaptainId,vice_captain_player_id:matchViceId}).eq("id",id);if(error)throw error;
+   const {error:e1}=await supabaseClient.from("match_lineup_players").delete().eq("lineup_id",id);if(e1)throw e1;
+  }else{
+   const {data,error}=await supabaseClient.from("match_lineups").insert({squad_id:currentFantasySquadId,match_id:activeLineupMatch.id,captain_player_id:matchCaptainId,vice_captain_player_id:matchViceId,status:"draft"}).select("id").single();
+   if(error)throw error;id=data.id;activeLineupId=id;
+  }
+  const {error:e2}=await supabaseClient.from("match_lineup_players").insert(db.squad.map(player_id=>({lineup_id:id,player_id:idKey(player_id),selection_type:"starter",bench_priority:null})));if(e2)throw e2;
+  matchStartingXI=db.squad.map(idKey);
+  renderMatchLineup();lineupMessage("11-player match lineup saved successfully to Supabase.","notice success");
+ }catch(error){lineupMessage("Could not save this match lineup: "+(error.message||String(error))+". Check the database permissions and migration.");}
+ finally{button.disabled=activeLineupStatus==="locked";}
+}
+
+async function loadLineupSettings(){
+ lineupSettings=null;
+ const {data,error}=await supabaseClient.from("tournament_fantasy_settings").select("starting_xi_budget,min_wicketkeepers,max_wicketkeepers,min_batsmen,max_batsmen,min_allrounders,max_allrounders,min_bowlers,max_bowlers").eq("tournament_id",BBL_TOURNAMENT_ID).maybeSingle();
+ if(error){
+  console.error("Could not load tournament fantasy settings:",error);
+  document.getElementById("matchDataStatus").textContent="Tournament settings could not be loaded: "+error.message+" (Code: "+(error.code||"not provided")+")";
+  return;
+ }
+ if(!data){
+  document.getElementById("matchDataStatus").textContent="No tournament fantasy settings row was found for the BBL tournament.";
+  return;
+ }
+ lineupSettings=data;
+}
+
+// Supabase authentication. Only the publishable key belongs in browser code.
+const SUPABASE_URL = "https://hiuzidkkxifpsrspsxpl.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_Cw8Q8gG_d8jtkV4K83ycig_83vQQCDI";
+const BBL_TOURNAMENT_ID = "040ab7e2-7b1f-41fd-9e3b-3cb1ab7ba2cd";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+let authMode = "login";
+let currentUserId = null;
+let currentFantasySquadId = null;
+let currentAccountRole = null;
+let currentDisplayName = null;
+
+const authGate = document.getElementById("authGate");
+const appShell = document.getElementById("appShell");
+const authForm = document.getElementById("authForm");
+const authMessage = document.getElementById("authMessage");
+const authNameField = document.getElementById("nameField");
+const authSubmit = document.getElementById("authSubmit");
+
+async function loadBblPlayers(){
+  const status=document.getElementById("playerDataStatus");
+  status.textContent="Loading BBL players and credit values…";
+  const [playersResult,pricesResult]=await Promise.all([
+    supabaseClient.from("players").select("id,full_name,player_role,cricket_team_id,cricket_teams(name,short_name)").eq("is_active",true).order("full_name"),
+    supabaseClient.from("tournament_player_prices").select("player_id,credit_value").eq("tournament_id",BBL_TOURNAMENT_ID)
+  ]);
+  if(playersResult.error||pricesResult.error){const e=playersResult.error||pricesResult.error;status.textContent="Could not load the player database: "+e.message;status.className="notice";return;}
+  const prices=new Map((pricesResult.data||[]).map(x=>[x.player_id,Number(x.credit_value)]));
+  const loaded=(playersResult.data||[]).map(p=>({id:p.id,name:p.full_name,team:p.cricket_teams?.short_name||p.cricket_teams?.name||"Team TBC",role:p.player_role,credit:prices.has(p.id)?prices.get(p.id):null}));
+  if(loaded.length!==124||prices.size!==124){status.textContent=`Loaded ${loaded.length} active players and ${prices.size} BBL price records. Expected 124 of each; please verify before selecting a squad.`;status.className="notice";}else{status.textContent="Connected · 124 players · 124 BBL credit values";status.className="muted";}
+  db.players=loaded;
+  const validIds=new Set(loaded.map(p=>p.id));
+  db.squad=db.squad.filter(id=>validIds.has(id));db.xi=db.xi.filter(id=>validIds.has(id)&&db.squad.includes(id));
+  if(!db.squad.includes(db.captain))db.captain="";if(!db.squad.includes(db.vice))db.vice="";
+  renderPlayers();renderXI();
+}
+async function loadBblFixtures(){
+  const status=document.getElementById("matchDataStatus");status.textContent="Loading the 40 BBL fixtures…";
+  const {data:matches,error}=await supabaseClient.from("matches").select("id,tournament_id,home_team_id,away_team_id,match_name,venue,starts_at,selection_deadline,status,match_number,match_stage").eq("tournament_id",BBL_TOURNAMENT_ID).order("match_number");
+  if(error){status.textContent="Could not load fixtures: "+error.message;status.className="notice";return;}
+  const teamIds=[...new Set((matches||[]).flatMap(m=>[m.home_team_id,m.away_team_id]).filter(Boolean))];
+  const {data:teams,error:teamError}=teamIds.length?await supabaseClient.from("cricket_teams").select("id,name,short_name").in("id",teamIds):{data:[],error:null};
+  if(teamError){status.textContent="Fixtures loaded, but team names could not be loaded: "+teamError.message;status.className="notice";return;}
+  const teamMap=new Map((teams||[]).map(t=>[t.id,t.short_name||t.name]));
+  bblFixtures=(matches||[]).map(m=>({...m,home_name:teamMap.get(m.home_team_id)||"TBC",away_name:teamMap.get(m.away_team_id)||"TBC"}));
+  const stages=[...new Set(bblFixtures.map(m=>m.match_stage).filter(Boolean))];
+  const stageSelect=document.getElementById("mcStage");stageSelect.innerHTML='<option value="all">All stages</option>'+stages.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join("");
+  renderMatchOptions();
+  renderUpcomingMatch();
+  status.textContent=`Connected · ${bblFixtures.length} BBL fixtures loaded`;
+  if(bblFixtures.length!==40){status.className="notice";status.textContent+=` (expected 40 — please verify fixture records)`;}else status.className="muted";
+}
+async function loadSavedTournamentSquad(){
+ if(!currentUserId)return {ok:false,count:0,message:"No authenticated user."};
+ const {data:squad,error}=await supabaseClient.from("fantasy_squads").select("id,fantasy_team_name").eq("tournament_id",BBL_TOURNAMENT_ID).eq("user_id",currentUserId).maybeSingle();
+ if(error){
+  currentFantasySquadId=null;db.squad=[];renderPlayers();renderXI();
+  const message="Could not read your tournament squad record: "+error.message+" ("+(error.code||"no code")+").";
+  msg("teamMessage",message,"notice");return {ok:false,count:0,message};
+ }
+ if(!squad){currentFantasySquadId=null;db.squad=[];renderPlayers();renderXI();return {ok:false,count:0,message:"No saved tournament squad record was found for this signed-in account."};}
+ currentFantasySquadId=squad.id;
+ const {data:rows,error:playersError}=await supabaseClient.from("squad_players").select("player_id").eq("squad_id",squad.id);
+ if(playersError){
+  db.squad=[];renderPlayers();renderXI();
+  const message="Your squad record exists, but Supabase would not return its player rows: "+playersError.message+" ("+(playersError.code||"no code")+").";
+  msg("teamMessage",message,"notice");return {ok:false,count:0,message};
+ }
+ const validIds=new Set(db.players.map(p=>idKey(p.id)));
+ const fetched=(rows||[]).map(x=>idKey(x.player_id)).filter(id=>validIds.has(id));
+ db.squad=[...new Set(fetched)];
+ db.xi=db.squad.slice(0,11);
+ if(!db.squad.includes(idKey(db.captain)))db.captain="";
+ if(!db.squad.includes(idKey(db.vice)))db.vice="";
+ persist();renderPlayers();renderXI();
+ if(db.squad.length!==11){
+  const message=db.squad.length===0
+   ?"Supabase returned zero visible squad_players rows for your saved squad. This commonly means the SELECT row-level security policy is missing. Apply the supplied squad-read SQL policy, then reopen Match Centre."
+   :`Supabase returned ${db.squad.length} of the required 11 saved players. Check the squad_players rows and access policy.`;
+  msg("teamMessage",message,"notice");return {ok:false,count:db.squad.length,message};
+ }
+ msg("teamMessage","Loaded your saved tournament team (11/11) from Supabase.","notice success");
+ return {ok:true,count:11,squadId:squad.id};
+}
+async function loadLockedFixtureIds(){
+ lockedFixtureIds=new Set();
+ if(!currentFantasySquadId)return;
+ const {data,error}=await supabaseClient.from("match_lineups").select("match_id").eq("squad_id",currentFantasySquadId).eq("status","locked");
+ if(error){console.warn("Could not check locked fixtures for upcoming-match routing:",error.message);return;}
+ lockedFixtureIds=new Set((data||[]).map(x=>idKey(x.match_id)));
+}
+async function loadDashboardData(){
+  const tournamentEl=document.getElementById("statTournament");
+  const membersEl=document.getElementById("statMembers");
+  const pointsEl=document.getElementById("statPoints");
+  const leadersEl=document.getElementById("homeLeaders");
+  if(tournamentEl)tournamentEl.textContent="Loading…";
+  if(membersEl)membersEl.textContent="—";
+  if(pointsEl)pointsEl.textContent="—";
+
+  const {data:tournament,error:tournamentError}=await supabaseClient
+    .from("tournaments").select("name,league_id")
+    .eq("id",BBL_TOURNAMENT_ID).maybeSingle();
+  if(tournamentError){
+    if(tournamentEl)tournamentEl.textContent="Unavailable";
+    console.warn("Dashboard tournament lookup failed:",tournamentError.message);
+  }else if(tournamentEl){
+    tournamentEl.textContent=tournament?.name||"Tournament not configured";
+  }
+
+  if(tournament?.league_id){
+    const {count,error:memberError}=await supabaseClient
+      .from("league_members").select("user_id",{count:"exact",head:true})
+      .eq("league_id",tournament.league_id);
+    if(membersEl)membersEl.textContent=memberError?"Unavailable":String(count??0);
+    if(memberError)console.warn("Dashboard manager count failed:",memberError.message);
+  }else if(membersEl){membersEl.textContent="—";}
+
+  if(currentFantasySquadId){
+    const {data:scores,error:scoreError}=await supabaseClient
+      .from("tournament_fantasy_scores").select("total_points")
+      .eq("squad_id",currentFantasySquadId);
+    if(scoreError){
+      if(pointsEl)pointsEl.textContent="Unavailable";
+      if(leadersEl)leadersEl.innerHTML='<p class="muted">Could not load TLF scoring data. Please refresh later.</p>';
+      console.warn("Dashboard TLF score lookup failed:",scoreError.message);
+    }else{
+      const totalPoints=(scores||[]).reduce((sum,row)=>sum+Number(row.total_points||0),0);
+      const scoredMatches=(scores||[]).length;
+      if(pointsEl)pointsEl.textContent=String(Number(totalPoints.toFixed(2)));
+      if(leadersEl)leadersEl.innerHTML=`<div class="row"><span><strong>Your tournament team</strong><br><span class="muted">${scoredMatches} scored matches</span></span><strong>${Number(totalPoints.toFixed(2))} pts</strong></div>${scoredMatches===0?'<p class="muted" style="margin-top:10px">Tournament scoring is awaiting completed match results.</p>':''}`;
+    }
+  }else{
+    if(pointsEl)pointsEl.textContent="0";
+    if(leadersEl)leadersEl.innerHTML='<p class="muted">Save your tournament squad to appear in the standings.</p>';
+  }
+}
+async function loadBblData(){await Promise.all([loadBblPlayers(),loadBblFixtures(),loadLineupSettings()]);await loadSavedTournamentSquad();await loadLockedFixtureIds();await loadDashboardData();renderUpcomingMatch();refreshCountdowns();}
+setInterval(refreshCountdowns,60000);
+
+function setAuthMessage(message, isError=false) {
+  authMessage.textContent = message;
+  authMessage.style.color = isError ? "var(--red)" : "var(--muted)";
+}
+function setAuthMode(mode) {
+  authMode = mode;
+  document.getElementById("loginTab").classList.toggle("active", mode === "login");
+  document.getElementById("signupTab").classList.toggle("active", mode === "signup");
+  authNameField.hidden = mode !== "signup";
+  document.getElementById("authPassword").autocomplete = mode === "login" ? "current-password" : "new-password";
+  authSubmit.textContent = mode === "login" ? "Sign in" : "Create account";
+  setAuthMessage("");
+}
+document.getElementById("loginTab").addEventListener("click", () => setAuthMode("login"));
+document.getElementById("signupTab").addEventListener("click", () => setAuthMode("signup"));
+
+
+const BSB_LEAGUE_ID = "c7057c50-628d-469d-a4a5-3b4d6403316c";
+let currentLeagueMember = false;
+let currentLeagueOwner = false;
+
+function setLeagueAccessUI(hasAccess) {
+  currentLeagueMember = !!hasAccess;
+  const adminAllowed = currentAccountRole === "super_admin" || currentLeagueOwner;
+  const adminNav = document.getElementById("adminNavButton");
+  if (adminNav) adminNav.classList.toggle("hidden", !adminAllowed);
+  document.getElementById("admin").classList.toggle("hidden", true);
+  document.getElementById("join").classList.toggle("hidden", !!hasAccess);
+  const joinNav = document.querySelector('.navlinks button[data-page="join"]');
+  if (joinNav) joinNav.classList.toggle("hidden", !!hasAccess);
+  document.querySelectorAll('.navlinks button[data-page="home"], .navlinks button[data-page="team"], .navlinks button[data-page="leaderboard"], .navlinks button[data-page="matchcentre"]').forEach(btn => {
+    btn.classList.toggle("hidden", !hasAccess);
+  });
+  if (!hasAccess) {
+    showPage("join");
+  } else if (document.getElementById("join").classList.contains("hidden") === false) {
+    showPage("home");
+  }
+}
+
+async function refreshLeagueAccess() {
+  const { data: league, error: leagueError } = await supabaseClient
+    .from("leagues").select("id,owner_id").eq("id", BSB_LEAGUE_ID).maybeSingle();
+  if (leagueError) throw leagueError;
+  currentLeagueOwner = !!league && league.owner_id === currentUserId;
+  if (currentAccountRole === "super_admin" || currentLeagueOwner) {
+    setLeagueAccessUI(true);
+    return true;
+  }
+  const { data: membership, error: membershipError } = await supabaseClient
+    .from("league_members").select("league_id,member_role")
+    .eq("league_id", BSB_LEAGUE_ID).eq("user_id", currentUserId).maybeSingle();
+  if (membershipError) throw membershipError;
+  setLeagueAccessUI(!!membership);
+  return !!membership;
+}
+
+document.getElementById("joinLeagueForm").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const button = document.getElementById("joinLeagueButton");
+  const message = document.getElementById("joinLeagueMessage");
+  const code = document.getElementById("joinInviteCode").value.trim();
+  if (!currentUserId) { message.textContent = "Please sign in first."; return; }
+  button.disabled = true;
+  message.textContent = "Checking invitation code…";
+  try {
+    const { data, error } = await supabaseClient.rpc("join_league_with_code", { p_invite_code: code });
+    if (error) throw error;
+    const result = Array.isArray(data) ? data[0] : data;
+    if (!result || !result.joined_league_id) throw new Error("The invitation was accepted but no league membership was returned.");
+    message.textContent = result.already_member
+      ? "You are already a member of this league."
+      : "You have successfully joined Blood, Sweat & Boundaries!";
+    message.className = "auth-message success";
+    await refreshLeagueAccess();
+    if (currentLeagueMember) {
+      await loadBblData();
+      showPage("home");
+    }
+  } catch (error) {
+    message.textContent = error.message || "Could not join the league.";
+    message.className = "auth-message";
+    message.style.color = "var(--red)";
+  } finally {
+    button.disabled = false;
+  }
+});
+
+document.getElementById("generateInviteButton").addEventListener("click", async () => {
+  const button = document.getElementById("generateInviteButton");
+  const output = document.getElementById("generatedInviteCode");
+  const message = document.getElementById("inviteAdminMessage");
+  if (!(currentAccountRole === "super_admin" || currentLeagueOwner)) {
+    message.textContent = "Access denied. Only the league owner or super admin can generate invitations.";
+    return;
+  }
+  button.disabled = true;
+  message.textContent = "Generating a secure invitation…";
+  try {
+    const { data, error } = await supabaseClient.rpc("create_league_invite", { p_league_id: BSB_LEAGUE_ID });
+    if (error) throw error;
+    output.value = data || "";
+    if (!data) throw new Error("The database did not return an invitation code.");
+    message.textContent = "New invitation generated. This code is shown only once; copy and share it securely.";
+    message.className = "auth-message success";
+  } catch (error) {
+    message.textContent = error.message || "Could not generate invitation.";
+    message.className = "auth-message";
+    message.style.color = "var(--red)";
+  } finally {
+    button.disabled = false;
+  }
+});
+
+async function showAuthenticatedApp(session) {
+  if (!session) {
+    appShell.classList.add("hidden");
+    authGate.classList.remove("hidden");
+    return;
+  }
+  // Confirm a profile exists before exposing the authenticated application.
+  const { data: profile, error } = await supabaseClient
+    .from("profiles").select("id,display_name,account_role")
+    .eq("id", session.user.id).maybeSingle();
+
+  if (error || !profile) {
+    appShell.classList.add("hidden");
+    authGate.classList.remove("hidden");
+    setAuthMessage(
+      error ? "Could not verify your profile: " + error.message :
+      "Your account is authenticated, but its participant profile has not been created. Ask the commissioner to check the profile-creation setup.",
+      true
+    );
+    return;
+  }
+  authGate.classList.add("hidden");
+  appShell.classList.remove("hidden");
+  currentUserId = session.user.id;
+  currentAccountRole = profile.account_role || "participant";
+  currentDisplayName = profile.display_name || session.user.email;
+  document.getElementById("adminBulkLockPanel").hidden = currentAccountRole !== "super_admin";
+  document.getElementById("adminScorePanel").hidden = currentAccountRole !== "super_admin";
+  try {
+    const hasLeagueAccess = await refreshLeagueAccess();
+    if (hasLeagueAccess) await loadBblData();
+  } catch (accessError) {
+    console.error("League access check failed:", accessError);
+    appShell.classList.add("hidden");
+    authGate.classList.remove("hidden");
+    setAuthMessage("Could not verify league membership: " + accessError.message, true);
+    return;
+  }
+  const nav = document.querySelector(".nav");
+  if (nav && !document.getElementById("authUserBar")) {
+    const bar = document.createElement("div");
+    bar.id = "authUserBar";
+    bar.className = "auth-top";
+    bar.style.margin = "0 22px 10px";
+    bar.innerHTML = `<span class="muted" id="signedInLabel"></span><button id="changePasswordButton" type="button">Change password</button><button id="signOutButton" type="button">Sign out</button>`;
+    nav.appendChild(bar);
+    document.getElementById("changePasswordButton").addEventListener("click", () => {
+      document.getElementById("passwordChangeMessage").textContent = "";
+      document.getElementById("passwordChangePanel").classList.remove("hidden");
+    });
+    document.getElementById("signOutButton").addEventListener("click", async () => {
+      const { error: signOutError } = await supabaseClient.auth.signOut();
+      if (signOutError) alert(signOutError.message);
+    });
+  }
+  const label = document.getElementById("signedInLabel");
+  if (label) label.textContent = profile.display_name || session.user.email;
+}
+
+authForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  authSubmit.disabled = true;
+  setAuthMessage(authMode === "login" ? "Signing in…" : "Creating account…");
+  const email = document.getElementById("authEmail").value.trim();
+  const password = document.getElementById("authPassword").value;
+  try {
+    if (authMode === "signup") {
+      const displayName = document.getElementById("authName").value.trim();
+      if (!displayName) throw new Error("Please enter your display name.");
+      const { data, error } = await supabaseClient.auth.signUp({
+        email, password,
+        options: { data: { display_name: displayName } }
+      });
+      if (error) throw error;
+      if (data.session) {
+        await showAuthenticatedApp(data.session);
+        setAuthMessage("Account created.");
+      } else {
+        setAuthMessage("Account created. Check your email to confirm it, then sign in. After email confirmation, sign in and enter the invitation code shared by the commissioner.");
+      }
+    } else {
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      await showAuthenticatedApp(data.session);
+    }
+  } catch (error) {
+    setAuthMessage(error.message || "Authentication failed.", true);
+  } finally {
+    authSubmit.disabled = false;
+  }
+});
+
+
+// Allow an authenticated user (including a password-recovery session) to set a new password.
+document.getElementById("closePasswordChange").addEventListener("click", () => {
+  document.getElementById("passwordChangePanel").classList.add("hidden");
+});
+document.getElementById("passwordChangeForm").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const password = document.getElementById("newPassword").value;
+  const confirmation = document.getElementById("confirmNewPassword").value;
+  const message = document.getElementById("passwordChangeMessage");
+  const button = document.getElementById("saveNewPassword");
+  if (password.length < 8) { message.textContent = "Use at least 8 characters."; return; }
+  if (password !== confirmation) { message.textContent = "The passwords do not match."; return; }
+  button.disabled = true; message.textContent = "Updating password…";
+  const { error } = await supabaseClient.auth.updateUser({ password });
+  button.disabled = false;
+  if (error) { message.textContent = "Could not update password: " + error.message; return; }
+  document.getElementById("passwordChangeForm").reset();
+  message.textContent = "Password updated successfully. You can now sign in with your new password.";
+});
+
+supabaseClient.auth.onAuthStateChange((_event, session) => {
+  // Defer profile query to avoid running Supabase queries inside the auth callback.
+  setTimeout(() => showAuthenticatedApp(session), 0);
+});
+supabaseClient.auth.getSession().then(({ data, error }) => {
+  if (error) setAuthMessage(error.message, true);
+  showAuthenticatedApp(data.session);
+});
+
+</script>
+</body></html>

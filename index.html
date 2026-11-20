@@ -147,6 +147,13 @@ main{max-width:1320px;margin:22px auto}.hero{position:relative;min-height:245px;
    <button class="btn primary" id="adminCalculateScoresButton" type="button" onclick="adminCalculateMatchScores()">CALCULATE / RECALCULATE MATCH SCORES</button>
    <div id="adminCalculateScoresMessage" aria-live="polite" style="margin-top:10px"></div>
    <div id="adminCalculateScoresResults" style="margin-top:12px"></div>
+   <div class="card" id="adminPublishResultsPanel" style="margin-top:14px;border:1px solid #7b9fc4;background:#f4f8fc" hidden>
+    <h3>Commissioner control · Official publication</h3>
+    <p class="muted">Publish the verified match scores so participants can see the result and the match contributes to the published leaderboard. The database checks that scoring is complete before publication.</p>
+    <div class="row"><span>Publication status</span><strong id="matchPublicationStatus">Not published</strong></div>
+    <button class="btn primary" id="adminPublishResultsButton" type="button" onclick="adminPublishMatchResults()">PUBLISH MATCH RESULTS</button>
+    <div id="adminPublishResultsMessage" aria-live="polite" style="margin-top:10px"></div>
+   </div>
   </div>
   <div id="matchLineupMessage" aria-live="polite"></div>
  </div>
@@ -207,6 +214,7 @@ async function openMatchWorkspace(){
  document.getElementById("mcFixtureDetails").innerHTML=fixtureMarkup(match);
  document.getElementById("mcWorkspace").hidden=false;
  activeLineupMatch=match;
+ renderMatchPublicationStatus(match);
  lineupMessage("Loading your saved 11-player tournament team…");
  const result=await loadSavedTournamentSquad();
  if(!result.ok||db.squad.length!==11){
@@ -470,6 +478,64 @@ window.adminLockAllTeams = async function(){
  }
 };
 
+function renderMatchPublicationStatus(match){
+ const panel=document.getElementById("adminPublishResultsPanel");
+ const status=document.getElementById("matchPublicationStatus");
+ const button=document.getElementById("adminPublishResultsButton");
+ if(!panel||!status||!button)return;
+ const isCommissioner=currentAccountRole==="super_admin";
+ panel.hidden=!isCommissioner;
+ const published=!!(match&&match.results_published_at);
+ status.textContent=published?"PUBLISHED · "+new Date(match.results_published_at).toLocaleString("en-IN"):"Not published";
+ status.style.color=published?"#176b3d":"#795400";
+ button.disabled=published||!match;
+ button.textContent=published?"RESULTS ALREADY PUBLISHED":"PUBLISH MATCH RESULTS";
+}
+
+window.adminPublishMatchResults = async function(){
+ const button=document.getElementById("adminPublishResultsButton");
+ const output=document.getElementById("adminPublishResultsMessage");
+ if(currentAccountRole!=="super_admin"){
+  output.textContent="Access denied: only the super administrator can publish match results.";
+  return;
+ }
+ if(!activeLineupMatch||!activeLineupMatch.id){
+  output.textContent="No match is open. Select a fixture and click Open match workspace first.";
+  return;
+ }
+ if(activeLineupMatch.results_published_at){
+  output.textContent="These match results have already been published.";
+  renderMatchPublicationStatus(activeLineupMatch);
+  return;
+ }
+ if(!confirm("Publish the verified results for this match? Participants will be able to see the match scores and the published leaderboard will include them."))return;
+ button.disabled=true;
+ output.textContent="Publishing verified match results…";
+ try{
+  const {data,error}=await supabaseClient.rpc("commissioner_publish_match_results",{p_match_id:activeLineupMatch.id});
+  if(error)throw error;
+  const {data:publishedMatch,error:refreshError}=await supabaseClient.from("matches")
+   .select("id,results_published_at,results_published_by")
+   .eq("id",activeLineupMatch.id).single();
+  if(refreshError)throw refreshError;
+  if(!publishedMatch?.results_published_at)throw new Error("The publish function returned, but the match is not marked as published. Please check the database function result.");
+  activeLineupMatch.results_published_at=publishedMatch.results_published_at;
+  activeLineupMatch.results_published_by=publishedMatch.results_published_by;
+  const fixture=bblFixtures.find(m=>m.id===activeLineupMatch.id);
+  if(fixture){fixture.results_published_at=publishedMatch.results_published_at;fixture.results_published_by=publishedMatch.results_published_by;}
+  renderMatchPublicationStatus(activeLineupMatch);
+  output.textContent="Match results published successfully. Participants can now see the published scores.";
+  output.className="notice success";
+  await loadDashboardData();
+  await loadLeaderboardData();
+ }catch(error){
+  console.error("Match result publication failed:",error);
+  output.textContent="Could not publish match results: "+(error.message||String(error));
+  output.className="notice";
+  button.disabled=false;
+ }
+};
+
 window.adminCalculateMatchScores = async function(){
  const button=document.getElementById("adminCalculateScoresButton");
  const output=document.getElementById("adminCalculateScoresMessage");
@@ -625,7 +691,7 @@ async function loadBblPlayers(){
 }
 async function loadBblFixtures(){
   const status=document.getElementById("matchDataStatus");status.textContent="Loading the 40 BBL fixtures…";
-  const {data:matches,error}=await supabaseClient.from("matches").select("id,tournament_id,home_team_id,away_team_id,match_name,venue,starts_at,selection_deadline,status,match_number,match_stage").eq("tournament_id",BBL_TOURNAMENT_ID).order("match_number");
+  const {data:matches,error}=await supabaseClient.from("matches").select("id,tournament_id,home_team_id,away_team_id,match_name,venue,starts_at,selection_deadline,status,match_number,match_stage,results_published_at,results_published_by").eq("tournament_id",BBL_TOURNAMENT_ID).order("match_number");
   if(error){status.textContent="Could not load fixtures: "+error.message;status.className="notice";return;}
   const teamIds=[...new Set((matches||[]).flatMap(m=>[m.home_team_id,m.away_team_id]).filter(Boolean))];
   const {data:teams,error:teamError}=teamIds.length?await supabaseClient.from("cricket_teams").select("id,name,short_name").in("id",teamIds):{data:[],error:null};
@@ -911,6 +977,7 @@ async function showAuthenticatedApp(session) {
   currentDisplayName = profile.display_name || session.user.email;
   document.getElementById("adminBulkLockPanel").hidden = currentAccountRole !== "super_admin";
   document.getElementById("adminScorePanel").hidden = currentAccountRole !== "super_admin";
+  document.getElementById("adminPublishResultsPanel").hidden = currentAccountRole !== "super_admin";
   const isCommissioner = currentAccountRole === "super_admin";
   document.getElementById("matchWorkflowPanel").hidden = !isCommissioner;
   document.getElementById("matchCentreTopGrid").classList.toggle("participant-match-grid", !isCommissioner);

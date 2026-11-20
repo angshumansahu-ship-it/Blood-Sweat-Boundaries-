@@ -693,6 +693,12 @@ async function loadLeaderboardData(){
     );
     if(error)throw error;
     const rows=Array.isArray(data)?data:[];
+    const {data:matchCounts,error:matchCountError}=await supabaseClient.rpc(
+      "get_tournament_leaderboard_match_counts",
+      {p_tournament_id:BBL_TOURNAMENT_ID}
+    );
+    if(matchCountError)throw matchCountError;
+    const countByUser=new Map((matchCounts||[]).map(item=>[item.user_id,Number(item.matches_played||0)]));
     if(!rows.length){
       body.innerHTML='<tr><td colspan="4" class="empty">No tournament teams or scores are available yet.</td></tr>';
       message.textContent="Live leaderboard connected. Standings will appear as participants save teams and match scores are calculated.";
@@ -702,7 +708,8 @@ async function loadLeaderboardData(){
       const points=Number(row.cumulative_points||0);
       const rank=Number(row.overall_rank||0);
       const manager=esc(row.fantasy_team_name||"Unnamed team");
-      return `<tr><td><strong>${rank}</strong></td><td>${manager}</td><td><strong>${points.toFixed(2)}</strong></td><td>${points>0?"Scored":"Awaiting score"}</td></tr>`;
+      const matches=countByUser.get(row.user_id)||0;
+      return `<tr><td><strong>${rank}</strong></td><td>${manager}</td><td><strong>${points.toFixed(2)}</strong></td><td>${matches}</td></tr>`;
     }).join("");
     message.textContent=`Live tournament standings · ${rows.length} team${rows.length===1?"":"s"} · Totals include all saved match scores.`;
   }catch(error){

@@ -372,10 +372,10 @@ async function loadSubstitutionStatus(match){
  const previous=row.previous_match_number?`Compared with Match ${row.previous_match_number}`:"No earlier locked XI — first match";
  const proposedLabel=activeLineupStatus==="locked"?"Changes in this locked match":"Proposed changes for this fixture";
  if(row.is_unlimited){
-  box.innerHTML=`<div class="lineup-metric"><span>Phase</span><b>${esc(phaseLabel)}</b></div><div class="lineup-metric"><span>Substitutions already used</span><b>${used}</b></div><div class="lineup-metric"><span>${esc(proposedLabel)}</span><b>${activeLineupStatus==="locked"?0:proposed}</b></div><div class="lineup-metric"><span>Allowance</span><b>Unlimited</b></div><p class="muted" style="font-size:12px">${esc(previous)}. No substitution cap applies in this transition phase.</p>`;
+  box.innerHTML=`<div class="lineup-metric"><span>Phase</span><b>${esc(phaseLabel)}</b></div><div class="lineup-metric"><span>Substitutions already used</span><b>${used}</b></div><div class="lineup-metric"><span>${esc(proposedLabel)}</span><b>${proposed}</b></div><div class="lineup-metric"><span>Allowance</span><b>Unlimited</b></div><p class="muted" style="font-size:12px">${esc(previous)}. No substitution cap applies in this transition phase.</p>`;
  }else{
   const after=used+(activeLineupStatus==="locked"?0:proposed),remaining=Math.max(allowance-after,0),over=after>allowance;
-  box.innerHTML=`<div class="lineup-metric"><span>Phase</span><b>${esc(phaseLabel)}</b></div><div class="lineup-metric"><span>Already used</span><b>${used} / ${allowance}</b></div><div class="lineup-metric"><span>${esc(proposedLabel)}</span><b>${activeLineupStatus==="locked"?0:proposed}</b></div><div class="lineup-metric"><span>Remaining after this team</span><b>${remaining}</b></div><p class="muted" style="font-size:12px">${esc(previous)}.</p>${over?'<div class="notice">This team exceeds the phase allowance. It cannot be locked.</div>':''}`;
+  box.innerHTML=`<div class="lineup-metric"><span>Phase</span><b>${esc(phaseLabel)}</b></div><div class="lineup-metric"><span>Already used</span><b>${used} / ${allowance}</b></div><div class="lineup-metric"><span>${esc(proposedLabel)}</span><b>${proposed}</b></div><div class="lineup-metric"><span>Remaining after this team</span><b>${remaining}</b></div><p class="muted" style="font-size:12px">${esc(previous)}.</p>${over?'<div class="notice">This team exceeds the phase allowance. It cannot be locked.</div>':''}`;
  }
 }
 
